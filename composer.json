@@ -46,6 +46,8 @@
                 "https://www.drupal.org/files/issues/media_entity--beta2-to-f544c91.patch"
             },
             "drupal/panelizer": {
+                "Implement admin UI for editing Panelizer defaults":
+                "https://www.drupal.org/files/issues/2664682-25.patch",
                 "Generate new UUIDs for displays when switching from default to field storage":
                 "https://www.drupal.org/files/issues/2701349-2.patch",
                 "Explicitly set the Panels IPE URL root when saving in Panelizer":
@@ -57,7 +59,9 @@
                 "2667754 - Allow other modules to disable the IPE based on custom logic":
                 "https://www.drupal.org/files/issues/2667754-3.patch",
                 "Bandaid tempstore patch":
-                "https://www.drupal.org/files/issues/bandaid.patch"
+                "https://www.drupal.org/files/issues/bandaid.patch",
+                "Wizard API integration":
+                "https://www.drupal.org/files/issues/wizard_api_integration-not-working-2697587-11.patch"
             },
             "drupal/scheduled_updates": {
                 "2674874 - Issue saving Schedule Update Type form":
@@ -83,7 +87,7 @@
         "drupal/ctools": "8.3.0-alpha25",
         "drupal/panels": "8.3.0-beta4",
         "drupal/page_manager": "8.1.0-alpha23",
-        "drupal/panelizer": "8.3.0-alpha2",
+        "drupal/panelizer": "8.3.x-dev",
         "drupal/scheduled_updates": "8.1.0-alpha5",
         "drupal/workbench_moderation": "8.1.0",
         "drupal/acquia_connector": "^8.1.1",

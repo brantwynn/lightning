@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "4cf5ab17d49e8145c33fb76864310d92",
-    "content-hash": "5bbf71918240734c81dd66fa7b34f7f2",
+    "hash": "761955badb15156c8bf70bda817cd1c4",
+    "content-hash": "059efe57b641fb3ef645ddcab317361e",
     "packages": [
         {
             "name": "codegyre/robo",
@@ -1517,17 +1517,11 @@
         },
         {
             "name": "drupal/panelizer",
-            "version": "8.3.0-alpha2",
+            "version": "dev-8.x-3.x",
             "source": {
                 "type": "git",
                 "url": "https://git.drupal.org/project/panelizer",
-                "reference": "75a432927539383b391e6905fb5614cbe85a4b84"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/panelizer-8.x-3.0-alpha2.zip",
-                "reference": null,
-                "shasum": null
+                "reference": "86ffb078c14d3b8db3c4a1bba986af5b8d9fd6b0"
             },
             "require": {
                 "drupal/core": "8.*",
@@ -1541,6 +1535,7 @@
                     "dev-8.x-3.x": "8.3.x-dev"
                 },
                 "patches_applied": {
+                    "Implement admin UI for editing Panelizer defaults": "https://www.drupal.org/files/issues/2664682-25.patch",
                     "Generate new UUIDs for displays when switching from default to field storage": "https://www.drupal.org/files/issues/2701349-2.patch",
                     "Explicitly set the Panels IPE URL root when saving in Panelizer": "https://www.drupal.org/files/issues/panelizer-ipe-url-root-handling.patch"
                 }
@@ -1551,7 +1546,7 @@
             ],
             "description": "Allow any entity view mode to be rendered using a Panels display.",
             "homepage": "https://www.drupal.org/project/panelizer",
-            "time": "2016-02-16 21:30:30"
+            "time": "2016-02-17 16:06:35"
         },
         {
             "name": "drupal/panels",
@@ -1587,7 +1582,8 @@
                 "patches_applied": {
                     "beta4 to 8eba1a0 - quickedit blocks": "https://www.drupal.org/files/issues/panels--beta4-to-8eba1a0.patch",
                     "2667754 - Allow other modules to disable the IPE based on custom logic": "https://www.drupal.org/files/issues/2667754-3.patch",
-                    "Bandaid tempstore patch": "https://www.drupal.org/files/issues/bandaid.patch"
+                    "Bandaid tempstore patch": "https://www.drupal.org/files/issues/bandaid.patch",
+                    "Wizard API integration": "https://www.drupal.org/files/issues/wizard_api_integration-not-working-2697587-11.patch"
                 }
             },
             "notification-url": "https://packagist.drupal-composer.org/downloads/",
@@ -1780,12 +1776,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/drush-ops/drush.git",
-                "reference": "5f5f9cf405ca131eb1f8341f76a8b429d002329e"
+                "reference": "1860a8de960b872f8282282197259b35850402df"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/drush-ops/drush/zipball/5f5f9cf405ca131eb1f8341f76a8b429d002329e",
-                "reference": "5f5f9cf405ca131eb1f8341f76a8b429d002329e",
+                "url": "https://api.github.com/repos/drush-ops/drush/zipball/1860a8de960b872f8282282197259b35850402df",
+                "reference": "1860a8de960b872f8282282197259b35850402df",
                 "shasum": ""
             },
             "require": {
@@ -1875,7 +1871,7 @@
             ],
             "description": "Drush is a command line shell and scripting interface for Drupal, a veritable Swiss Army knife designed to make life easier for those of us who spend some of our working hours hacking away at the command prompt.",
             "homepage": "http://www.drush.org",
-            "time": "2016-04-16 16:51:13"
+            "time": "2016-04-21 20:00:28"
         },
         {
             "name": "easyrdf/easyrdf",
@@ -5917,6 +5913,7 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "cweagans/composer-patches": 20,
+        "drupal/panelizer": 20,
         "drush/drush": 20
     },
     "prefer-stable": true,

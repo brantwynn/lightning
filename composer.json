@@ -95,6 +95,9 @@
         "drupal/services": "8.4.0-alpha3",
         "drupal-composer/drupal-scaffold": "^1.2",
         "drush/drush": "dev-master",
-        "drupal/pathauto": "^8.1.0"
+        "drupal/pathauto": "^8.1.0",
+        "drupal/entity_browser": "dev-8.x-1.x",
+        "drupal/dropzonejs": "^8.1.0",
+        "drupal/views_infinite_scroll": "^8.1"
     }
 }

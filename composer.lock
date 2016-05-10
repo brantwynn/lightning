@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "4f9cf49538c76719be58d85c12fb43a4",
-    "content-hash": "02217af2d300d9194ad794786be9ba81",
+    "hash": "accba45364533c39df106cdcb4bc9796",
+    "content-hash": "d5db87b6fab67a99c215ff21e17f8854",
     "packages": [
         {
             "name": "codegyre/robo",
@@ -1971,6 +1971,9 @@
             "extra": {
                 "branch-alias": {
                     "dev-master": "9.0.x-dev"
+                },
+                "patches_applied": {
+                    "Adding composer.json support to make-convert command": "https://github.com/drush-ops/drush/commit/ce82b946d49b09cd33da5ca84feb24a6c35f8f8e.patch"
                 }
             },
             "autoload": {

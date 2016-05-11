@@ -91,7 +91,6 @@
         "drupal/inline_entity_form": "8.1.0-alpha6",
         "drupal/metatag": "^8.1.0",
         "drupal/token": "^8.1.0",
-        "drupal/services": "8.4.0-alpha3",
         "drupal-composer/drupal-scaffold": "^1.2",
         "drush/drush": "^9.0",
         "drupal/pathauto": "^8.1.0",

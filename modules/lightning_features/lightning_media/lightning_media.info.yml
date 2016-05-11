@@ -10,4 +10,5 @@ dependencies:
   - lightning_core
   - media_entity
   - user
+  - video_embed_field
   - views_infinite_scroll

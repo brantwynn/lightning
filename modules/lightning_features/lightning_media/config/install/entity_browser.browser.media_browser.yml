@@ -3,6 +3,7 @@ status: true
 dependencies:
   module:
     - dropzonejs_eb_widget
+    - lightning_media
     - views
 name: media_browser
 label: 'Media Browser'
@@ -33,3 +34,9 @@ widgets:
     weight: -10
     label: Library
     id: view
+  8b142f33-59d1-47b1-9e3a-4ae85d8376fa:
+    settings: {  }
+    uuid: 8b142f33-59d1-47b1-9e3a-4ae85d8376fa
+    weight: 3
+    label: 'Create Embed'
+    id: embed_code

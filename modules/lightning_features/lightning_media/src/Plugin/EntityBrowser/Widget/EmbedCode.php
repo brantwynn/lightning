@@ -94,8 +94,19 @@ class EmbedCode extends WidgetBase {
       '#prefix' => '<div id="preview">',
       '#suffix' => '</div>',
     );
+
+    $entity = $form_state->get('entity');
+    if ($entity && $form_state->isSubmitted() == FALSE) {
+      $entity->delete();
+    }
+
     if ($embed_code = $form_state->getValue('embed_code')) {
       $preview = $this->generatePreview($embed_code);
+
+      if (isset($preview['#media'])) {
+        $form_state->set('entity', $preview['#media'])->setCached();
+      }
+
       unset($preview['#prefix'], $preview['#suffix']);
       $form['preview'] = array_merge($form['preview'], $preview);
     }

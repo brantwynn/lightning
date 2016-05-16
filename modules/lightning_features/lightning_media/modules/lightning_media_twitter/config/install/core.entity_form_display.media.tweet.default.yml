@@ -5,18 +5,29 @@ dependencies:
     - field.field.media.tweet.embed_code
     - field.field.media.tweet.field_media_in_library
     - media_entity.bundle.tweet
-_core:
-  default_config_hash: dP0wJ7vKuhR3ynilotmKD8WzQkvF0PdsywwEAG2ryWo
+  module:
+    - field_group
+    - workbench_moderation
+third_party_settings:
+  field_group:
+    group_metadata:
+      children:
+        - name
+        - field_media_in_library
+      parent_name: ''
+      weight: 2
+      label: Metadata
+      format_type: fieldset
+      format_settings:
+        label: Metadata
+        required_fields: true
+        id: metadata
+        classes: visually-hidden
 id: media.tweet.default
 targetEntityType: media
 bundle: tweet
 mode: default
 content:
-  created:
-    type: datetime_timestamp
-    weight: 4
-    settings: {  }
-    third_party_settings: {  }
   embed_code:
     type: string_textarea
     weight: 1
@@ -26,7 +37,7 @@ content:
     third_party_settings: {  }
   field_media_in_library:
     type: boolean_checkbox
-    weight: 2
+    weight: 1
     settings:
       display_label: true
     third_party_settings: {  }
@@ -37,12 +48,7 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  uid:
-    type: entity_reference_autocomplete
-    weight: 3
-    settings:
-      match_operator: CONTAINS
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-hidden: {  }
+hidden:
+  created: true
+  uid: true
+

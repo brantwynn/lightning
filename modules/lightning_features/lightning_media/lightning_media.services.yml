@@ -1,0 +1,7 @@
+services:
+  lightning.media.bundle_resolver:
+    class: '\Drupal\lightning_media\MediaBundleResolver'
+    arguments:
+      - '@entity_type.manager'
+      - '@typed_data_manager'
+      - '@module_handler'

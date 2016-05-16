@@ -1,13 +1,17 @@
 <?php
 
-use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Entity\Entity\EntityFormDisplay;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Session\AccountInterface;
 use Drupal\field\Entity\FieldConfig;
+use Drupal\lightning_media\MediaForm;
 use Drupal\media_entity\MediaBundleInterface;
-use Drupal\services\ServiceEndpointInterface;
-use Drupal\views\ViewEntityInterface;
+
+/**
+ * Implements hook_entity_type_alter().
+ */
+function lightning_media_entity_type_alter(array &$entity_types) {
+  $entity_types['media']->setFormClass('default', MediaForm::class);
+}
 
 /**
  * Implements hook_ENTITY_TYPE_insert().

@@ -11,10 +11,8 @@ use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\Core\TypedData\Plugin\DataType\StringData;
-use Drupal\Core\TypedData\TypedDataManagerInterface;
 use Drupal\entity_browser\WidgetBase;
-use Drupal\video_embed_field\ProviderManagerInterface;
+use Drupal\lightning_media\MediaBundleResolver;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -31,14 +29,9 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class EmbedCode extends WidgetBase {
 
   /**
-   * @var \Drupal\video_embed_field\ProviderManagerInterface
+   * @var \Drupal\lightning_media\MediaBundleResolver
    */
-  protected $videoProviders;
-
-  /**
-   * @var \Drupal\Core\TypedData\TypedDataManagerInterface
-   */
-  protected $typedData;
+  protected $bundleResolver;
 
   /**
    * @var \Drupal\Core\Session\AccountInterface
@@ -50,10 +43,9 @@ class EmbedCode extends WidgetBase {
    */
   protected $renderer;
 
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, EventDispatcherInterface $event_dispatcher, EntityManagerInterface $entity_manager, ProviderManagerInterface $video_providers, TypedDataManagerInterface $typed_data, AccountInterface $current_user, RendererInterface $renderer) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, EventDispatcherInterface $event_dispatcher, EntityManagerInterface $entity_manager, MediaBundleResolver $bundle_resolver, AccountInterface $current_user, RendererInterface $renderer) {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $event_dispatcher, $entity_manager);
-    $this->videoProviders = $video_providers;
-    $this->typedData = $typed_data;
+    $this->bundleResolver = $bundle_resolver;
     $this->currentUser = $current_user;
     $this->renderer = $renderer;
   }
@@ -68,8 +60,7 @@ class EmbedCode extends WidgetBase {
       $plugin_definition,
       $container->get('event_dispatcher'),
       $container->get('entity.manager'),
-      $container->get('video_embed_field.provider_manager'),
-      $container->get('typed_data_manager'),
+      $container->get('lightning.media.bundle_resolver'),
       $container->get('current_user'),
       $container->get('renderer')
     );
@@ -119,7 +110,7 @@ class EmbedCode extends WidgetBase {
   }
 
   protected function generatePreview($embed_code) {
-    $bundle = $this->getBundle($embed_code);
+    $bundle = $this->bundleResolver->getBundleFromEmbedCode($embed_code);
 
     if ($bundle) {
       /** @var \Drupal\media_entity\MediaInterface $entity */
@@ -137,48 +128,6 @@ class EmbedCode extends WidgetBase {
     else {
       return [];
     }
-  }
-
-  /**
-   * @return \Drupal\media_entity\MediaBundleInterface|FALSE
-   */
-  protected function getBundle($embed_code) {
-    $storage = $this->entityManager->getStorage('media_bundle');
-
-    switch (TRUE) {
-      case $this->isVideo($embed_code):
-        return $storage->load('video');
-
-      case $this->isTweet($embed_code):
-        return $storage->load('tweet');
-
-      case $this->isInstagram($embed_code):
-        return $storage->load('instagram');
-
-      default:
-        return FALSE;
-    }
-  }
-
-  protected function isVideo($embed_code) {
-    return (boolean) $this->videoProviders->loadProviderFromInput($embed_code);
-  }
-
-  protected function isTweet($embed_code) {
-    return $this->validateStringAs('TweetEmbedCode', $embed_code);
-  }
-
-  protected function isInstagram($embed_code) {
-    return $this->validateStringAs('InstagramEmbedCode', $embed_code);
-  }
-
-  protected function validateStringAs($constraint, $input) {
-    $definition = $this->typedData->createDataDefinition('string');
-    $definition->addConstraint($constraint);
-    $value = StringData::createInstance($definition);
-    $value->setValue($input);
-
-    return $value->validate()->count() == 0;
   }
 
 }

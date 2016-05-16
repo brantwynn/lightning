@@ -17,6 +17,7 @@ use Drupal\file\Element\ManagedFile;
 use Drupal\media_entity\MediaForm as BaseMediaForm;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Constraints\Null;
 
 /**
  * A Lightning-specific version of the default media entity form.
@@ -28,6 +29,14 @@ class MediaForm extends BaseMediaForm {
    */
   protected $bundleResolver;
 
+  /**
+   * MediaForm constructor.
+   *
+   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
+   *   The entity manager.
+   * @param \Drupal\lightning_media\MediaBundleResolver $bundle_resolver
+   *   The media bundle resolver.
+   */
   public function __construct(EntityManagerInterface $entity_manager, MediaBundleResolver $bundle_resolver) {
     parent::__construct($entity_manager);
     $this->bundleResolver = $bundle_resolver;
@@ -117,10 +126,35 @@ class MediaForm extends BaseMediaForm {
    *   The AJAX response.
    */
   public function uploadAjaxCallback(array &$form, FormStateInterface $form_state, Request $request) {
-    return ManagedFile::uploadAjaxCallback($form, $form_state, $request)
+    $response = ManagedFile::uploadAjaxCallback($form, $form_state, $request);
+    return $this->toggleMetadata($response);
+  }
+
+  /**
+   * Adds an AJAX command to toggle the visibility of the #metadata field group.
+   *
+   * @param \Drupal\Core\Ajax\AjaxResponse $response
+   *   The AJAX response.
+   *
+   * @return \Drupal\Core\Ajax\AjaxResponse
+   *   The AJAX response.
+   */
+  protected function toggleMetadata(AjaxResponse $response) {
+    return $response
       ->addCommand(new InvokeCommand('#metadata', 'toggleClass', ['visually-hidden']));
   }
 
+  /**
+   * AJAX callback. Generates a preview from an embed code.
+   *
+   * @param array $form
+   *   The complete form.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current form state.
+   *
+   * @return \Drupal\Core\Ajax\AjaxResponse
+   *   The AJAX response.
+   */
   public function previewAjaxCallback(array &$form, FormStateInterface $form_state) {
     // Get the containing element in order to access the preview element, since
     // we need to get its selector.
@@ -134,10 +168,19 @@ class MediaForm extends BaseMediaForm {
 
     $response = new AjaxResponse();
     $response->addCommand(new HtmlCommand($selector, $preview));
-
-    return $response;
+    return $this->toggleMetadata($response);
   }
 
+  /**
+   * Generates a preview from an embed code.
+   *
+   * @param string $embed_code
+   *   The embed code.
+   *
+   * @return array|NULL
+   *   A renderable array, or NULL if the embed code could not be resolved to
+   *   an existing media bundle.
+   */
   protected function generatePreview($embed_code) {
     if ($embed_code) {
       $bundle = $this->bundleResolver->getBundleFromEmbedCode($embed_code);

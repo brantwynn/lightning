@@ -7,13 +7,17 @@
 
 namespace Drupal\lightning_media\Plugin\EntityBrowser\Widget;
 
-use Drupal\Core\Entity\Entity\EntityFormDisplay;
+use Drupal\Core\Entity\EntityFieldManagerInterface;
+use Drupal\Core\Entity\EntityFormBuilderInterface;
 use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Render\RendererInterface;
+use Drupal\Core\Render\Element;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\entity_browser\WidgetBase;
 use Drupal\lightning_media\MediaBundleResolver;
+use Drupal\lightning_media\MediaFormPreview;
+use Drupal\media_entity\MediaInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -40,15 +44,21 @@ class EmbedCode extends WidgetBase {
   protected $currentUser;
 
   /**
-   * @var \Drupal\Core\Render\RendererInterface
+   * @var \Drupal\Core\Entity\EntityFormBuilderInterface
    */
-  protected $renderer;
+  protected $entityFormBuilder;
 
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, EventDispatcherInterface $event_dispatcher, EntityManagerInterface $entity_manager, MediaBundleResolver $bundle_resolver, AccountInterface $current_user, RendererInterface $renderer) {
+  /**
+   * @var \Drupal\Core\Entity\EntityFieldManagerInterface
+   */
+  protected $entityFieldManager;
+
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, EventDispatcherInterface $event_dispatcher, EntityManagerInterface $entity_manager, MediaBundleResolver $bundle_resolver, AccountInterface $current_user, EntityFormBuilderInterface $entity_form_builder, EntityFieldManagerInterface $entity_field_manager) {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $event_dispatcher, $entity_manager);
     $this->bundleResolver = $bundle_resolver;
     $this->currentUser = $current_user;
-    $this->renderer = $renderer;
+    $this->entityFormBuilder = $entity_form_builder;
+    $this->entityFieldManager = $entity_field_manager;
   }
 
   /**
@@ -63,7 +73,8 @@ class EmbedCode extends WidgetBase {
       $container->get('entity.manager'),
       $container->get('lightning.media.bundle_resolver'),
       $container->get('current_user'),
-      $container->get('renderer')
+      $container->get('entity.form_builder'),
+      $container->get('entity_field.manager')
     );
   }
 
@@ -78,41 +89,73 @@ class EmbedCode extends WidgetBase {
       '#placeholder' => $this->t('Enter a URL or embed code...'),
       '#ajax' => array(
         'event' => 'change',
-        'wrapper' => 'edit-metadata',
-        'callback' => [$this, 'getMetadata'],
+        'method' => 'html',
+        'wrapper' => 'edit-proxied',
+        'callback' => [$this, 'getProxiedFields'],
       ),
     );
-    $form['preview'] = array(
-      '#prefix' => '<div id="preview">',
-      '#suffix' => '</div>',
-    );
-    $form['metadata'] = [
-      '#type' => 'container',
-    ];
+    $form['proxied']['#type'] = 'container';
 
     if ($embed_code = $form_state->getValue('embed_code')) {
       $entity = $this->generateEntity($embed_code);
       if ($entity) {
-        $entity_form = \Drupal::service('entity.form_builder')->getForm($entity);
-        $form_display = EntityFormDisplay::load('media.' . $entity->bundle() . '.default');
-        $group_info = $form_display->getThirdPartySetting('field_group', 'group_metadata');
-        foreach ($group_info['children'] as $child) {
-          $form['metadata'][$child] = $entity_form[$child];
-        }
+        $proxiable = array_merge($this->getProxiableFields($entity), [
+          MediaFormPreview::PREVIEW_FIELD => TRUE,
+        ]);
+        $form['proxied'] = array_intersect_key($this->entityFormBuilder->getForm($entity), $proxiable);
       }
     }
+    $form['proxied']['#type'] = 'container';
 
     return $form;
   }
 
-  public function getMetadata(array &$form, FormStateInterface $form_state) {
-    return $form['widget']['metadata'];
+  /**
+   * Returns all fields of an entity which can be proxied by the widget.
+   *
+   * @param \Drupal\media_entity\MediaInterface $entity
+   *   The entity.
+   *
+   * @return \Drupal\Core\Field\FieldDefinitionInterface[]
+   *   The proxiable field definitions, keyed by machine name.
+   */
+  protected function getProxiableFields(MediaInterface $entity) {
+    // Get all field definitions for this entity type and bundle.
+    $fields = $this->entityFieldManager->getFieldDefinitions($entity->getEntityTypeId(), $entity->bundle());
+
+    // Get the type configuration so we can filter out the media source field.
+    $type_configuration = $entity->getType()->getConfiguration();
+
+    return array_filter($fields, function (FieldDefinitionInterface $field) use ($type_configuration) {
+      // Allow the field through only if it's required and not the source field.
+      return $field->getName() == $type_configuration['source_field'] ? FALSE : $field->isRequired();
+    });
   }
 
-  public function getPreview(array &$form, FormStateInterface $form_state) {
-    return $form['widget']['preview'];
+  /**
+   * AJAX callback. Returns the proxied fields for the media entity.
+   *
+   * @param array $form
+   *   The complete form.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current form state.
+   *
+   * @return array
+   *   The proxied fields' container element.
+   */
+  public function getProxiedFields(array &$form, FormStateInterface $form_state) {
+    return $form['widget']['proxied'];
   }
 
+  /**
+   * Generates a media entity from an embed code.
+   *
+   * @param string $embed_code
+   *   The embed code.
+   *
+   * @return \Drupal\media_entity\MediaInterface
+   *   The new, unsaved media entity.
+   */
   protected function generateEntity($embed_code) {
     $bundle = $this->bundleResolver->getBundleFromEmbedCode($embed_code);
 
@@ -128,27 +171,6 @@ class EmbedCode extends WidgetBase {
       $entity->set($type_configuration['source_field'], $embed_code);
 
       return $entity;
-    }
-  }
-
-  protected function generatePreview($embed_code) {
-    $bundle = $this->bundleResolver->getBundleFromEmbedCode($embed_code);
-
-    if ($bundle) {
-      /** @var \Drupal\media_entity\MediaInterface $entity */
-      $entity = $this->entityManager->getStorage('media')->create([
-        'bundle' => $bundle->id(),
-        'name' => 'TODO',
-        'uid' => $this->currentUser->id(),
-        'status' => TRUE,
-      ]);
-      $type_configuration = $bundle->getTypeConfiguration();
-      $entity->set($type_configuration['source_field'], $embed_code)->save();
-
-      return $this->entityManager->getViewBuilder('media')->view($entity);
-    }
-    else {
-      return [];
     }
   }
 

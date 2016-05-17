@@ -50,9 +50,9 @@ class MediaFormPreview {
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $manager
    *   The entity type manager.
    * @param \Drupal\Core\StringTranslation\TranslationInterface $translator
-   *   The translation service.
+   *   (optional) The translation service.
    */
-  public function __construct(EntityTypeManagerInterface $manager, TranslationInterface $translator) {
+  public function __construct(EntityTypeManagerInterface $manager, TranslationInterface $translator = NULL) {
     $this->displayStorage = $manager->getStorage('entity_form_display');
     $this->fieldStorage = $manager->getStorage('field_config');
     $this->bundleStorage = $manager->getStorage('media_bundle');
@@ -126,9 +126,11 @@ class MediaFormPreview {
         ];
       }
 
-      $input = $form_state->getValue([$source_field, 0, 'value']);
-      $entity->set($source_field, $input);
-      if ($input) {
+      $key = [$source_field, 0, 'value'];
+      if ($form_state->hasValue($key)) {
+        $entity->set($source_field, $form_state->getValue($key));
+      }
+      if ($entity->get($source_field)->getValue()) {
         $form[static::PREVIEW_FIELD]['entity'] = $this->viewBuilder->view($entity);
       }
     }

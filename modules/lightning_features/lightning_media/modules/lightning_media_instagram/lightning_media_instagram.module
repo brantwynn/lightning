@@ -1,0 +1,8 @@
+<?php
+
+/**
+ * Implements hook_entity_extra_field_info().
+ */
+function lightning_media_instagram_entity_extra_field_info() {
+  return \Drupal::service('lightning.media.form_preview')->addToBundle('instagram');
+}

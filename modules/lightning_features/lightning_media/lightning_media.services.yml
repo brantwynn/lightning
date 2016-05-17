@@ -5,3 +5,8 @@ services:
       - '@entity_type.manager'
       - '@typed_data_manager'
       - '@module_handler'
+  lightning.media.form_preview:
+    class: '\Drupal\lightning_media\MediaFormPreview'
+    arguments:
+      - '@entity_type.manager'
+      - '@string_translation'

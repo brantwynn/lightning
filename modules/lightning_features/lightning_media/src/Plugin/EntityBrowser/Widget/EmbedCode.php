@@ -7,6 +7,7 @@
 
 namespace Drupal\lightning_media\Plugin\EntityBrowser\Widget;
 
+use Drupal\Core\Entity\Entity\EntityFormDisplay;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\RendererInterface;
@@ -77,36 +78,57 @@ class EmbedCode extends WidgetBase {
       '#placeholder' => $this->t('Enter a URL or embed code...'),
       '#ajax' => array(
         'event' => 'change',
-        'wrapper' => 'preview',
-        'callback' => [$this, 'getPreview'],
+        'wrapper' => 'edit-metadata',
+        'callback' => [$this, 'getMetadata'],
       ),
     );
     $form['preview'] = array(
       '#prefix' => '<div id="preview">',
       '#suffix' => '</div>',
     );
-
-    $entity = $form_state->get('entity');
-    if ($entity && $form_state->isSubmitted() == FALSE) {
-      $entity->delete();
-    }
+    $form['metadata'] = [
+      '#type' => 'container',
+    ];
 
     if ($embed_code = $form_state->getValue('embed_code')) {
-      $preview = $this->generatePreview($embed_code);
-
-      if (isset($preview['#media'])) {
-        $form_state->set('entity', $preview['#media'])->setCached();
+      $entity = $this->generateEntity($embed_code);
+      if ($entity) {
+        $entity_form = \Drupal::service('entity.form_builder')->getForm($entity);
+        $form_display = EntityFormDisplay::load('media.' . $entity->bundle() . '.default');
+        $group_info = $form_display->getThirdPartySetting('field_group', 'group_metadata');
+        foreach ($group_info['children'] as $child) {
+          $form['metadata'][$child] = $entity_form[$child];
+        }
       }
-
-      unset($preview['#prefix'], $preview['#suffix']);
-      $form['preview'] = array_merge($form['preview'], $preview);
     }
 
     return $form;
   }
 
+  public function getMetadata(array &$form, FormStateInterface $form_state) {
+    return $form['widget']['metadata'];
+  }
+
   public function getPreview(array &$form, FormStateInterface $form_state) {
     return $form['widget']['preview'];
+  }
+
+  protected function generateEntity($embed_code) {
+    $bundle = $this->bundleResolver->getBundleFromEmbedCode($embed_code);
+
+    if ($bundle) {
+      /** @var \Drupal\media_entity\MediaInterface $entity */
+      $entity = $this->entityManager->getStorage('media')->create([
+        'bundle' => $bundle->id(),
+        'name' => 'TODO',
+        'uid' => $this->currentUser->id(),
+        'status' => TRUE,
+      ]);
+      $type_configuration = $bundle->getTypeConfiguration();
+      $entity->set($type_configuration['source_field'], $embed_code);
+
+      return $entity;
+    }
   }
 
   protected function generatePreview($embed_code) {

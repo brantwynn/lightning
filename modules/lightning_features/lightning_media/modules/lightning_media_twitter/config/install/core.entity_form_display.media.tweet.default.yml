@@ -7,7 +7,6 @@ dependencies:
     - media_entity.bundle.tweet
   module:
     - field_group
-    - workbench_moderation
 third_party_settings:
   field_group:
     group_metadata:

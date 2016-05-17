@@ -108,6 +108,27 @@ class EmbedCode extends WidgetBase {
   }
 
   /**
+   * {@inheritdoc}
+   */
+  public function submit(array &$element, array &$form, FormStateInterface $form_state) {
+    $embed_code = $form_state->getValue('embed_code');
+    $bundle = $this->bundleResolver->getBundleFromEmbedCode($embed_code);
+    if ($bundle) {
+      /** @var \Drupal\media_entity\MediaInterface $entity */
+      $entity = $this->entityManager->getStorage('media')->create([
+        'bundle' => $bundle->id(),
+      ]);
+      foreach ($form_state->getValues() as $key => $value) {
+        if ($entity->hasField($key)) {
+          $entity->set($key, $value);
+        }
+      }
+      $entity->save();
+      $this->selectEntities([$entity], $form_state);
+    }
+  }
+
+  /**
    * Returns all fields of an entity which can be proxied by the widget.
    *
    * @param \Drupal\media_entity\MediaInterface $entity

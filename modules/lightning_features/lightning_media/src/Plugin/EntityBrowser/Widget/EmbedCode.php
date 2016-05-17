@@ -99,10 +99,7 @@ class EmbedCode extends WidgetBase {
     if ($embed_code = $form_state->getValue('embed_code')) {
       $entity = $this->generateEntity($embed_code);
       if ($entity) {
-        $proxiable = array_merge($this->getProxiableFields($entity), [
-          MediaFormPreview::PREVIEW_FIELD => TRUE,
-        ]);
-        $form['proxied'] = array_intersect_key($this->entityFormBuilder->getForm($entity), $proxiable);
+        $form['proxied'] = array_intersect_key($this->entityFormBuilder->getForm($entity), $this->getProxiableFields($entity));
       }
     }
     $form['proxied']['#type'] = 'container';
@@ -120,16 +117,23 @@ class EmbedCode extends WidgetBase {
    *   The proxiable field definitions, keyed by machine name.
    */
   protected function getProxiableFields(MediaInterface $entity) {
-    // Get all field definitions for this entity type and bundle.
-    $fields = $this->entityFieldManager->getFieldDefinitions($entity->getEntityTypeId(), $entity->bundle());
+    $entity_type = $entity->getEntityTypeId();
+    $bundle = $entity->bundle();
 
-    // Get the type configuration so we can filter out the media source field.
+    $configurable_fields = array_filter(
+      $this->entityManager->getFieldDefinitions($entity_type, $bundle),
+      function (FieldDefinitionInterface $field) {
+        return $field->isRequired();
+      }
+    );
+    $extra_fields = $this->entityManager->getExtraFields($entity_type, $bundle);
+    $fields = array_merge($configurable_fields, $extra_fields['form']);
+
     $type_configuration = $entity->getType()->getConfiguration();
+    $source_field = $type_configuration['source_field'];
+    unset ($fields[$source_field]);
 
-    return array_filter($fields, function (FieldDefinitionInterface $field) use ($type_configuration) {
-      // Allow the field through only if it's required and not the source field.
-      return $field->getName() == $type_configuration['source_field'] ? FALSE : $field->isRequired();
-    });
+    return $fields;
   }
 
   /**

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\lightning_media\MediaBundleResolver.
+ */
+
 namespace Drupal\lightning_media;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -8,6 +13,9 @@ use Drupal\Core\TypedData\Plugin\DataType\StringData;
 use Drupal\Core\TypedData\TypedDataManagerInterface;
 use Drupal\video_embed_field\ProviderManagerInterface;
 
+/**
+ * Determines the media bundle which can handle an embed code.
+ */
 class MediaBundleResolver {
 
   /**

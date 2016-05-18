@@ -1,14 +1,24 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\lightning_media\MediaFormPreview.
+ */
+
 namespace Drupal\lightning_media;
 
+use Drupal\Core\DependencyInjection\DependencySerializationTrait;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\StringTranslation\TranslationInterface;
 
+/**
+ * Handles the generation of live previews in media entity forms.
+ */
 class MediaFormPreview {
 
+  use DependencySerializationTrait;
   use StringTranslationTrait;
 
   /**
@@ -116,21 +126,26 @@ class MediaFormPreview {
       /** @var \Drupal\Core\Field\FieldConfigInterface $field */
       $field = $this->fieldStorage->load($field);
 
-      // @TODO: Support video fields.
-      if ($field->getType() == 'string_long') {
-        $form[$source_field]['widget'][0]['value']['#ajax'] = [
-          'event' => 'change',
-          'method' => 'html',
-          'wrapper' => 'edit-' . str_replace('_', '-', static::PREVIEW_FIELD),
-          'callback' => [$this, 'getPreviewContent'],
-        ];
+      switch ($field->getType()) {
+        case 'video_embed_field':
+        case 'string_long':
+          $form[$source_field]['widget'][0]['value']['#ajax'] = [
+            'event' => 'change',
+            'method' => 'html',
+            'wrapper' => 'edit-' . str_replace('_', '-', static::PREVIEW_FIELD),
+            'callback' => [$this, 'getPreviewContent'],
+          ];
+          break;
+
+        default:
+          break;
       }
 
       $key = [$source_field, 0, 'value'];
       if ($form_state->hasValue($key)) {
         $entity->set($source_field, $form_state->getValue($key));
       }
-      if ($entity->get($source_field)->getValue()) {
+      if ($entity->get($source_field)->value) {
         $form[static::PREVIEW_FIELD]['entity'] = $this->viewBuilder->view($entity);
       }
     }

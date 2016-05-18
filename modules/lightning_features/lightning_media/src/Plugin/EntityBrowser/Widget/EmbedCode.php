@@ -114,9 +114,12 @@ class EmbedCode extends WidgetBase {
     $embed_code = $form_state->getValue('embed_code');
     $bundle = $this->bundleResolver->getBundleFromEmbedCode($embed_code);
     if ($bundle) {
+      $type_configuration = $bundle->getTypeConfiguration();
+
       /** @var \Drupal\media_entity\MediaInterface $entity */
       $entity = $this->entityManager->getStorage('media')->create([
         'bundle' => $bundle->id(),
+        $type_configuration['source_field'] => $embed_code,
       ]);
       foreach ($form_state->getValues() as $key => $value) {
         if ($entity->hasField($key)) {

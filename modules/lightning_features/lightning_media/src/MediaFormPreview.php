@@ -7,6 +7,9 @@
 
 namespace Drupal\lightning_media;
 
+use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\HtmlCommand;
+use Drupal\Core\Ajax\InvokeCommand;
 use Drupal\Core\DependencyInjection\DependencySerializationTrait;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -131,8 +134,6 @@ class MediaFormPreview {
         case 'string_long':
           $form[$source_field]['widget'][0]['value']['#ajax'] = [
             'event' => 'change',
-            'method' => 'html',
-            'wrapper' => 'edit-' . str_replace('_', '-', static::PREVIEW_FIELD),
             'callback' => [$this, 'getPreviewContent'],
           ];
           break;
@@ -163,7 +164,17 @@ class MediaFormPreview {
    *   The renderable live preview.
    */
   public function getPreviewContent(array &$form, FormStateInterface $form_state) {
-    return $form[static::PREVIEW_FIELD]['entity'] ?: ['#markup' => ''];
+    $response = new AjaxResponse();
+
+    $preview = $form[static::PREVIEW_FIELD]['entity'] ?: ['#markup' => ''];
+    $selector = '#edit-' . str_replace('_', '-', static::PREVIEW_FIELD);
+    $command = new HtmlCommand($selector, $preview);
+    $response->addCommand($command);
+
+    $command = new InvokeCommand('#metadata', 'toggleClass', ['visually-hidden']);
+    $response->addCommand($command);
+
+    return $response;
   }
 
 }

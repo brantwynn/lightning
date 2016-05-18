@@ -323,4 +323,13 @@ class LightningSubContext extends DrupalSubContextBase implements DrupalSubConte
     $this->assertSession()->elementExists('css', '#edit-preview article');
   }
 
+  /**
+   * @param $locator
+   *
+   * @Then I should see a :locator field
+   */
+  public function assertFieldExists($locator) {
+    $this->assertSession()->fieldExists($locator);
+  }
+
 }

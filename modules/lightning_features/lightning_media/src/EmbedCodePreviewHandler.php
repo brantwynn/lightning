@@ -27,6 +27,8 @@ class EmbedCodePreviewHandler extends PreviewHandlerBase {
    * {@inheritdoc}
    */
   public function alterForm(array &$form, FormStateInterface $form_state) {
+    parent::alterForm($form, $form_state);
+
     $entity = $this->getEntity($form_state);
     $field = $this->getField($entity)->getName();
 
@@ -48,8 +50,6 @@ class EmbedCodePreviewHandler extends PreviewHandlerBase {
     if ($entity->get($field)->value) {
       $form['preview']['entity'] = $this->viewBuilder->view($entity);
     }
-
-    parent::alterForm($form, $form_state);
   }
 
   public static function getPreviewContent(array &$form) {

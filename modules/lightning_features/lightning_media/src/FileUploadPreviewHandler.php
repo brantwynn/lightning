@@ -15,11 +15,12 @@ class FileUploadPreviewHandler extends PreviewHandlerBase {
    * {@inheritdoc}
    */
   public function alterForm(array &$form, FormStateInterface $form_state) {
+    parent::alterForm($form, $form_state);
+
     $entity = $this->getEntity($form_state);
     $field = $this->getField($entity)->getName();
 
     $form[$field]['widget'][0]['#process'][] = [$this, 'setCallback'];
-    parent::alterForm($form, $form_state);
   }
 
   public function setCallback(array $element) {

@@ -2,12 +2,21 @@
 Feature: Video media assets
   A media asset representing an externally hosted video.
 
-  Scenario: Creating a video
+  @javascript
+  Scenario: Creating a video from a YouTube URL
     Given I am logged in as a user with the media_creator role
-    When I visit "/media/add"
-    And I click "Video"
-    Then I should see "Video"
-    And I should see "Save to my media library"
+    When I visit "/media/add/video"
+    And I enter "https://www.youtube.com/watch?v=zQ1_IbFFbzA" for "Video URL"
+    And I wait for AJAX to finish
+    Then I should see a video preview
+
+  @javascript
+  Scenario: Creating a video from a Vimeo URL
+    Given I am logged in as a user with the media_creator role
+    When I visit "/media/add/video"
+    And I enter "https://vimeo.com/14782834" for "Video URL"
+    And I wait for AJAX to finish
+    Then I should see a video preview
 
   Scenario: Viewing a video as an anonymous user
     Given video from embed code:

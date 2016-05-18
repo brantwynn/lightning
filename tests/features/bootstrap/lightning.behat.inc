@@ -315,11 +315,11 @@ class LightningSubContext extends DrupalSubContextBase implements DrupalSubConte
   }
 
   /**
-   * Asserts the presence of a video live preview element.
+   * Asserts the presence of a live preview element.
    *
-   * @Then I should see a video preview
+   * @Then I should see a preview
    */
-  public function assertVideoPreview() {
+  public function assertPreviewElement() {
     $this->assertSession()->elementExists('css', '#edit-preview article');
   }
 

@@ -8,9 +8,7 @@ Feature: Video media assets
     When I visit "/media/add/video"
     And I enter "https://www.youtube.com/watch?v=zQ1_IbFFbzA" for "Video URL"
     And I wait for AJAX to finish
-    Then I should see a video preview
-    And I should see a "Media name" field
-    And I should see a "Save to my media library" field
+    Then I should see a preview
 
   @javascript
   Scenario: Creating a video from a Vimeo URL
@@ -18,9 +16,7 @@ Feature: Video media assets
     When I visit "/media/add/video"
     And I enter "https://vimeo.com/14782834" for "Video URL"
     And I wait for AJAX to finish
-    Then I should see a video preview
-    And I should see a "Media name" field
-    And I should see a "Save to my media library" field
+    Then I should see a preview
 
   Scenario: Viewing a video as an anonymous user
     Given video from embed code:

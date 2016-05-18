@@ -11,10 +11,16 @@ use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\Core\Ajax\InvokeCommand;
 use Drupal\Core\DependencyInjection\DependencySerializationTrait;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Field\FieldConfigInterface;
+use Drupal\Core\Form\FormState;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\StringTranslation\TranslationInterface;
+use Drupal\file\Element\ManagedFile;
+use Drupal\media_entity\MediaInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Handles the generation of live previews in media entity forms.
@@ -23,16 +29,6 @@ class MediaFormPreview {
 
   use DependencySerializationTrait;
   use StringTranslationTrait;
-
-  /**
-   * The ID of the extra preview field.
-   */
-  const PREVIEW_FIELD = 'preview';
-
-  /**
-   * The key of the metadata field group.
-   */
-  const METADATA_GROUP = 'group_metadata';
 
   /**
    * The entity_form_display storage handler.
@@ -93,7 +89,7 @@ class MediaFormPreview {
     }
 
     $extra = [];
-    $extra['media'][$bundle->id()]['form'][static::PREVIEW_FIELD] = [
+    $extra['media'][$bundle->id()]['form']['preview'] = [
       'label' => $this->t('Preview'),
       'description' => $this->t('A live preview of the @bundle.', [
         '@bundle' => $bundle->label(),
@@ -119,52 +115,94 @@ class MediaFormPreview {
     /** @var \Drupal\media_entity\MediaInterface $entity */
     $entity = $form_object->getEntity();
 
-    // Load the form display configuration.
-    $display = $entity->getEntityTypeId() . '.' . $entity->bundle() . '.default';
-    /** @var \Drupal\Core\Entity\Display\EntityFormDisplayInterface $display */
-    $display = $this->displayStorage->load($display);
-
-    $component = $display->getComponent(static::PREVIEW_FIELD);
-    if ($component) {
-      $form[static::PREVIEW_FIELD]['#type'] = 'container';
-
-      $type_config = $entity->getType()->getConfiguration();
-      $source_field = $type_config['source_field'];
-      $field = $entity->getEntityTypeId() . '.' . $entity->bundle() . '.' . $source_field;
-      /** @var \Drupal\Core\Field\FieldConfigInterface $field */
-      $field = $this->fieldStorage->load($field);
-
-      switch ($field->getType()) {
-        case 'video_embed_field':
-        case 'string_long':
-          $form[$source_field]['widget'][0]['value']['#ajax'] = [
-            'event' => 'change',
-            'callback' => [$this, 'getPreviewContent'],
-          ];
-          break;
-
-        default:
-          break;
-      }
-
-      $key = [$source_field, 0, 'value'];
-      if ($form_state->hasValue($key)) {
-        $entity->set($source_field, $form_state->getValue($key));
-      }
-      if ($entity->get($source_field)->value) {
-        $form[static::PREVIEW_FIELD]['entity'] = $this->viewBuilder->view($entity);
-      }
+    if ($this->isExternalPreview($entity)) {
+      $this->externalPreview($form, $form_state, $entity);
     }
-    $form['#pre_render'][] = [$this, 'prepareMeta'];
+    elseif ($this->isInternalPreview($entity)) {
+      $this->internalPreview($form, $form_state, $entity);
+    }
+
+    $group = $this->getDisplayConfiguration($entity)->getThirdPartySetting('field_group', 'group_metadata');
+    if ($group) {
+      $form['#pre_render'][] = [$this, 'prepareMetaData'];
+    }
   }
 
-  public function prepareMeta(array $element) {
-    $group = &$element[static::METADATA_GROUP];
-    if (isset($group)) {
-      $group['#attributes']['class'][] = 'metadata';
-      $group['#attributes']['style'][] = 'display: none;';
-    }
+  public function prepareMetaData(array $element) {
+    $element['group_metadata']['#attributes']['class'][] = 'metadata';
+    $element['group_metadata']['#attributes']['style'] = ['display: none;'];
     return $element;
+  }
+
+  protected function isInternalPreview(MediaInterface $entity) {
+    return in_array($this->getSourceField($entity)->getType(), [
+      'file',
+      'image',
+    ]);
+  }
+
+  protected function isExternalPreview(MediaInterface $entity) {
+    $component = $this->getDisplayConfiguration($entity)->getComponent('preview');
+    $field_type = $this->getSourceField($entity)->getType();
+
+    return $component && in_array($field_type, [
+      'string_long',
+      'video_embed_field',
+    ]);
+  }
+
+  protected function internalPreview(array &$form, FormStateInterface $form_state, MediaInterface $entity) {
+    $field = $this->getSourceField($entity)->getName();
+    $form[$field]['widget'][0]['#process'][] = [$this, 'setInternalPreviewAjaxCallback'];
+  }
+
+  public function setInternalPreviewAjaxCallback(array $element) {
+    $callback = [$this, 'uploadAjaxCallback'];
+    $element['upload_button']['#ajax']['callback'] = $callback;
+    $element['remove_button']['#ajax']['callback'] = $callback;
+    return $element;
+  }
+
+  protected function externalPreview(array &$form, FormStateInterface $form_state, MediaInterface $entity) {
+    $field = $this->getSourceField($entity)->getName();
+
+    $form[$field]['widget'][0]['value']['#ajax'] = [
+      'event' => 'change',
+      'callback' => [$this, 'getPreviewContent'],
+    ];
+    $form['preview']['#type'] = 'container';
+
+    $key = [$field, 0, 'value'];
+    if ($form_state->hasValue($key)) {
+      $entity->set($field, $form_state->getValue($key));
+    }
+    if ($entity->get($field)->value) {
+      $form['preview']['entity'] = $this->viewBuilder->view($entity);
+    }
+  }
+
+  /**
+   * @return \Drupal\Core\Field\FieldConfigInterface
+   */
+  protected function getSourceField(MediaInterface $entity) {
+    $type_config = $entity->getType()->getConfiguration();
+    $source_field = $type_config['source_field'];
+    $field = $entity->getEntityTypeId() . '.' . $entity->bundle() . '.' . $source_field;
+
+    return $this->fieldStorage->load($field);
+  }
+
+  /**
+   * @return \Drupal\Core\Entity\Display\EntityFormDisplayInterface
+   */
+  protected function getDisplayConfiguration(EntityInterface $entity) {
+    $id = $entity->getEntityTypeId() . '.' . $entity->bundle() . '.default';
+    return $this->displayStorage->load($id);
+  }
+
+  public function uploadAjaxCallback(array &$form, FormStateInterface $form_state, Request $request) {
+    $response = ManagedFile::uploadAjaxCallback($form, $form_state, $request);
+    return $this->toggleMetaData($response);
   }
 
   /**
@@ -181,15 +219,16 @@ class MediaFormPreview {
   public function getPreviewContent(array &$form, FormStateInterface $form_state) {
     $response = new AjaxResponse();
 
-    $preview = $form[static::PREVIEW_FIELD]['entity'] ?: ['#markup' => ''];
-    $selector = '#edit-' . str_replace('_', '-', static::PREVIEW_FIELD);
-    $command = new HtmlCommand($selector, $preview);
+    $content = $form['preview']['entity'] ?: ['#markup' => ''];
+    $command = new HtmlCommand('#edit-preview', $content);
     $response->addCommand($command);
 
+    return $this->toggleMetaData($response);
+  }
+
+  protected function toggleMetaData(AjaxResponse $response) {
     $command = new InvokeCommand('.metadata', 'toggle', [600]);
-    $response->addCommand($command);
-
-    return $response;
+    return $response->addCommand($command);
   }
 
 }

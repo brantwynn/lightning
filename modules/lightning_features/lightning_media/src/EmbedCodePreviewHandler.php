@@ -4,11 +4,14 @@ namespace Drupal\lightning_media;
 
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\HtmlCommand;
+use Drupal\Core\DependencyInjection\DependencySerializationTrait;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\TranslationInterface;
 
 class EmbedCodePreviewHandler extends PreviewHandlerBase {
+
+  use DependencySerializationTrait;
 
   /**
    * @var \Drupal\Core\Entity\EntityViewBuilderInterface
@@ -29,7 +32,7 @@ class EmbedCodePreviewHandler extends PreviewHandlerBase {
 
     $form[$field]['widget'][0]['value']['#ajax'] = [
       'event' => 'change',
-      'callback' => [__CLASS__, 'getPreviewContent'],
+      'callback' => [$this, 'getPreviewContent'],
     ];
     $form['preview'] = [
       '#type' => 'container',

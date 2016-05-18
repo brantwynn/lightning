@@ -6,13 +6,6 @@ use Drupal\field\Entity\FieldConfig;
 use Drupal\media_entity\MediaBundleInterface;
 
 /**
- * Implements hook_form_BASE_FORM_ID_alter().
- */
-function lightning_media_form_media_form_alter(array &$form, FormStateInterface $form_state) {
-  \Drupal::service('lightning.media.form_preview')->alterForm($form, $form_state);
-}
-
-/**
  * Implements hook_ENTITY_TYPE_insert().
  */
 function lightning_media_media_bundle_insert(MediaBundleInterface $bundle) {

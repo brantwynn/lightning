@@ -21,8 +21,6 @@ third_party_settings:
       format_settings:
         label: Metadata
         required_fields: true
-        id: metadata
-        classes: visually-hidden
 id: media.video.default
 targetEntityType: media
 bundle: video

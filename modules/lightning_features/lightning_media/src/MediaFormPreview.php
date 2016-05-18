@@ -30,6 +30,11 @@ class MediaFormPreview {
   const PREVIEW_FIELD = 'preview';
 
   /**
+   * The key of the metadata field group.
+   */
+  const METADATA_GROUP = 'group_metadata';
+
+  /**
    * The entity_form_display storage handler.
    *
    * @var \Drupal\Core\Entity\EntityStorageInterface
@@ -150,6 +155,16 @@ class MediaFormPreview {
         $form[static::PREVIEW_FIELD]['entity'] = $this->viewBuilder->view($entity);
       }
     }
+    $form['#pre_render'][] = [$this, 'prepareMeta'];
+  }
+
+  public function prepareMeta(array $element) {
+    $group = &$element[static::METADATA_GROUP];
+    if (isset($group)) {
+      $group['#attributes']['class'][] = 'metadata';
+      $group['#attributes']['style'][] = 'display: none;';
+    }
+    return $element;
   }
 
   /**
@@ -171,7 +186,7 @@ class MediaFormPreview {
     $command = new HtmlCommand($selector, $preview);
     $response->addCommand($command);
 
-    $command = new InvokeCommand('#metadata', 'toggleClass', ['visually-hidden']);
+    $command = new InvokeCommand('.metadata', 'toggle', [600]);
     $response->addCommand($command);
 
     return $response;

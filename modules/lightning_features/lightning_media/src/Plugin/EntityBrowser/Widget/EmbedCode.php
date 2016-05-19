@@ -7,8 +7,6 @@
 
 namespace Drupal\lightning_media\Plugin\EntityBrowser\Widget;
 
-use Drupal\Core\Entity\EntityFieldManagerInterface;
-use Drupal\Core\Entity\EntityFormBuilderInterface;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
@@ -45,6 +43,9 @@ class EmbedCode extends WidgetBase {
    */
   protected $currentUser;
 
+  /**
+   * @var \Drupal\lightning_media\FieldProxy
+   */
   protected $fieldProxy;
 
   /**
@@ -73,7 +74,7 @@ class EmbedCode extends WidgetBase {
   }
 
   /**
-   * @inheritDoc
+   * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static(

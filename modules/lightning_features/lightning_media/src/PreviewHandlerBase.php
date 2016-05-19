@@ -4,6 +4,7 @@ namespace Drupal\lightning_media;
 
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\InvokeCommand;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
@@ -57,8 +58,8 @@ abstract class PreviewHandlerBase implements PreviewHandlerInterface {
   /**
    * {@inheritdoc}
    */
-  public function alterForm(array &$form, FormStateInterface $form_state) {
-    $entity = $this->getEntity($form_state);
+  public function alterForm(array &$form, FormStateInterface $form_state, EntityInterface $entity = NULL) {
+    $entity = $entity ?: $this->getEntity($form_state);
 
     $display = $this->getDisplay($entity);
     if ($display->getThirdPartySetting('field_group', 'group_metadata')) {

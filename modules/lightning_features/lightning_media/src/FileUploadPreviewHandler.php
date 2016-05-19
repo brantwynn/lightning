@@ -3,6 +3,7 @@
 namespace Drupal\lightning_media;
 
 use Drupal\Core\DependencyInjection\DependencySerializationTrait;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\file\Element\ManagedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,10 +15,10 @@ class FileUploadPreviewHandler extends PreviewHandlerBase {
   /**
    * {@inheritdoc}
    */
-  public function alterForm(array &$form, FormStateInterface $form_state) {
-    parent::alterForm($form, $form_state);
+  public function alterForm(array &$form, FormStateInterface $form_state, EntityInterface $entity = NULL) {
+    parent::alterForm($form, $form_state, $entity);
 
-    $entity = $this->getEntity($form_state);
+    $entity = $entity ?: $this->getEntity($form_state);
     $field = $this->getField($entity)->getName();
 
     $form[$field]['widget'][0]['#process'][] = [$this, 'setCallback'];

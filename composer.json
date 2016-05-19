@@ -41,6 +41,10 @@
             ]
         },
         "patches": {
+            "drupal/field_group": {
+                "Field Group not working on node edit inside inline entity form":
+                "https://www.drupal.org/files/issues/field-group-2645570-8.x-1.0-rc4.patch"
+            },
             "drupal/panelizer": {
                 "Generate new UUIDs for displays when switching from default to field storage":
                 "https://www.drupal.org/files/issues/2701349-2.patch",

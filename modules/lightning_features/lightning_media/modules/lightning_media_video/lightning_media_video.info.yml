@@ -7,5 +7,5 @@ dependencies:
   - image
   - lightning_media
   - video_embed_media
-version: 8.x-1.0-beta3
+version: 8.x-1.0-rc6
 package: Lightning

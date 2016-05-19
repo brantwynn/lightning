@@ -5,6 +5,7 @@ namespace Drupal\lightning_media;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\Core\DependencyInjection\DependencySerializationTrait;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\TranslationInterface;
@@ -26,10 +27,10 @@ class EmbedCodePreviewHandler extends PreviewHandlerBase {
   /**
    * {@inheritdoc}
    */
-  public function alterForm(array &$form, FormStateInterface $form_state) {
-    parent::alterForm($form, $form_state);
+  public function alterForm(array &$form, FormStateInterface $form_state, EntityInterface $entity = NULL) {
+    parent::alterForm($form, $form_state, $entity);
 
-    $entity = $this->getEntity($form_state);
+    $entity = $entity ?: $this->getEntity($form_state);
     $field = $this->getField($entity)->getName();
 
     $form[$field]['widget'][0]['value']['#ajax'] = [

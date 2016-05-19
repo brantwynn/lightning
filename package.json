@@ -5,5 +5,9 @@
   "dependencies": {
     "bower": "1.7.x"
   },
-  "license": "GPL-2.0"
+  "license": "GPL-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://git.drupal.org/project/lightning.git"
+  }
 }

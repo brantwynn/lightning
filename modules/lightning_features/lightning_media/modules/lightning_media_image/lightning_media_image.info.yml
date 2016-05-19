@@ -3,6 +3,7 @@ description: 'Image support for Lightning Media.'
 type: module
 core: 8.x
 dependencies:
+  - entity_browser_entity_form
   - field_group
   - image
   - lightning_media

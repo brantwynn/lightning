@@ -16,7 +16,7 @@ function lightning_media_image_install() {
     ],
     'weight' => -9,
     'label' => t('Upload Image'),
-    'id' => 'ief',
+    'id' => 'entity_form',
   ]);
   $browser->save();
 }

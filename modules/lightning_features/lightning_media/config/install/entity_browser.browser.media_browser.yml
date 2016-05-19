@@ -2,7 +2,6 @@ langcode: en
 status: true
 dependencies:
   module:
-    - dropzonejs_eb_widget
     - lightning_media
     - views
 name: media_browser

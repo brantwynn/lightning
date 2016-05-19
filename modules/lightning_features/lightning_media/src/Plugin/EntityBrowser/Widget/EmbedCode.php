@@ -10,13 +10,12 @@ namespace Drupal\lightning_media\Plugin\EntityBrowser\Widget;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityFormBuilderInterface;
 use Drupal\Core\Entity\EntityManagerInterface;
-use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\entity_browser\WidgetBase;
+use Drupal\lightning_media\FieldProxy;
 use Drupal\lightning_media\MediaBundleResolver;
-use Drupal\media_entity\MediaInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -46,19 +45,7 @@ class EmbedCode extends WidgetBase {
    */
   protected $currentUser;
 
-  /**
-   * The entity form builder service.
-   *
-   * @var \Drupal\Core\Entity\EntityFormBuilderInterface
-   */
-  protected $entityFormBuilder;
-
-  /**
-   * The entity field manager service.
-   *
-   * @var \Drupal\Core\Entity\EntityFieldManagerInterface
-   */
-  protected $entityFieldManager;
+  protected $fieldProxy;
 
   /**
    * EmbedCode constructor.
@@ -82,12 +69,11 @@ class EmbedCode extends WidgetBase {
    * @param \Drupal\Core\Entity\EntityFieldManagerInterface $entity_field_manager
    *   The entity field manager service.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, EventDispatcherInterface $event_dispatcher, EntityManagerInterface $entity_manager, MediaBundleResolver $bundle_resolver, AccountInterface $current_user, EntityFormBuilderInterface $entity_form_builder, EntityFieldManagerInterface $entity_field_manager) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, EventDispatcherInterface $event_dispatcher, EntityManagerInterface $entity_manager, MediaBundleResolver $bundle_resolver, AccountInterface $current_user, EntityFormBuilderInterface $entity_form_builder, EntityFieldManagerInterface $entity_field_manager, FieldProxy $field_proxy) {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $event_dispatcher, $entity_manager);
     $this->bundleResolver = $bundle_resolver;
     $this->currentUser = $current_user;
-    $this->entityFormBuilder = $entity_form_builder;
-    $this->entityFieldManager = $entity_field_manager;
+    $this->fieldProxy = $field_proxy;
   }
 
   /**
@@ -102,8 +88,7 @@ class EmbedCode extends WidgetBase {
       $container->get('entity.manager'),
       $container->get('lightning.media.bundle_resolver'),
       $container->get('current_user'),
-      $container->get('entity.form_builder'),
-      $container->get('entity_field.manager')
+      $container->get('lightning_media.field_proxy')
     );
   }
 
@@ -128,7 +113,8 @@ class EmbedCode extends WidgetBase {
     if ($embed_code = $form_state->getValue('embed_code')) {
       $entity = $this->generateEntity($embed_code);
       if ($entity) {
-        $form['proxied'] = array_intersect_key($this->entityFormBuilder->getForm($entity), $this->getProxiableFields($entity));
+        $type_configuration = $entity->getType()->getConfiguration();
+        $form['proxied'] = $this->fieldProxy->getProxyFields($entity, (array) $type_configuration['source_field']);
       }
     }
     $form['proxied']['#type'] = 'container';
@@ -158,35 +144,6 @@ class EmbedCode extends WidgetBase {
       $entity->save();
       $this->selectEntities([$entity], $form_state);
     }
-  }
-
-  /**
-   * Returns all fields of an entity which can be proxied by the widget.
-   *
-   * @param \Drupal\media_entity\MediaInterface $entity
-   *   The entity.
-   *
-   * @return \Drupal\Core\Field\FieldDefinitionInterface[]
-   *   The proxiable field definitions, keyed by machine name.
-   */
-  protected function getProxiableFields(MediaInterface $entity) {
-    $entity_type = $entity->getEntityTypeId();
-    $bundle = $entity->bundle();
-
-    $configurable_fields = array_filter(
-      $this->entityManager->getFieldDefinitions($entity_type, $bundle),
-      function (FieldDefinitionInterface $field) {
-        return $field->isRequired();
-      }
-    );
-    $extra_fields = $this->entityManager->getExtraFields($entity_type, $bundle);
-    $fields = array_merge($configurable_fields, $extra_fields['form']);
-
-    $type_configuration = $entity->getType()->getConfiguration();
-    $source_field = $type_configuration['source_field'];
-    unset ($fields[$source_field]);
-
-    return $fields;
   }
 
   /**

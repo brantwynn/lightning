@@ -16,7 +16,6 @@ use Drupal\Core\Render\Element;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\entity_browser\WidgetBase;
 use Drupal\lightning_media\MediaBundleResolver;
-use Drupal\lightning_media\MediaFormPreview;
 use Drupal\media_entity\MediaInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -34,25 +33,55 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class EmbedCode extends WidgetBase {
 
   /**
+   * The media bundle resolver.
+   *
    * @var \Drupal\lightning_media\MediaBundleResolver
    */
   protected $bundleResolver;
 
   /**
+   * The currently logged in user.
+   *
    * @var \Drupal\Core\Session\AccountInterface
    */
   protected $currentUser;
 
   /**
+   * The entity form builder service.
+   *
    * @var \Drupal\Core\Entity\EntityFormBuilderInterface
    */
   protected $entityFormBuilder;
 
   /**
+   * The entity field manager service.
+   *
    * @var \Drupal\Core\Entity\EntityFieldManagerInterface
    */
   protected $entityFieldManager;
 
+  /**
+   * EmbedCode constructor.
+   *
+   * @param array $configuration
+   *   Plugin configuration.
+   * @param string $plugin_id
+   *   The plugin ID.
+   * @param mixed $plugin_definition
+   *   The plugin definition.
+   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $event_dispatcher
+   *   The event dispatcher.
+   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
+   *   The entity manager service.
+   * @param \Drupal\lightning_media\MediaBundleResolver $bundle_resolver
+   *   The media bundle resolver.
+   * @param \Drupal\Core\Session\AccountInterface $current_user
+   *   The currently logged in user.
+   * @param \Drupal\Core\Entity\EntityFormBuilderInterface $entity_form_builder
+   *   The entity form builder service.
+   * @param \Drupal\Core\Entity\EntityFieldManagerInterface $entity_field_manager
+   *   The entity field manager service.
+   */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, EventDispatcherInterface $event_dispatcher, EntityManagerInterface $entity_manager, MediaBundleResolver $bundle_resolver, AccountInterface $current_user, EntityFormBuilderInterface $entity_form_builder, EntityFieldManagerInterface $entity_field_manager) {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $event_dispatcher, $entity_manager);
     $this->bundleResolver = $bundle_resolver;
@@ -86,7 +115,7 @@ class EmbedCode extends WidgetBase {
 
     $form['embed_code'] = array(
       '#type' => 'textarea',
-      '#placeholder' => $this->t('Enter a URL or embed code...'),
+      '#placeholder' => $this->t('Enter a URL...'),
       '#ajax' => array(
         'event' => 'change',
         'method' => 'html',

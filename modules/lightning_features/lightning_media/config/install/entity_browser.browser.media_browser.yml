@@ -15,17 +15,6 @@ selection_display_configuration: {  }
 widget_selector: tabs
 widget_selector_configuration: {  }
 widgets:
-  e58433d3-c05e-4709-bf9c-1ecc9002308e:
-    settings:
-      media_entity_bundle: image
-      upload_location: 'public://'
-      dropzone_description: 'Drop images here to upload them'
-      max_filesize: 2M
-      extensions: 'jpg jpeg gif png'
-    uuid: e58433d3-c05e-4709-bf9c-1ecc9002308e
-    weight: -9
-    label: 'Upload Image'
-    id: dropzonejs_media_entity
   134808d9-d854-4a0b-8699-d5eba006b8b7:
     settings:
       view: media_library

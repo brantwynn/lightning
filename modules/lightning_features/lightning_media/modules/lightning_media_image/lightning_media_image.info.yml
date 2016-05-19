@@ -3,6 +3,7 @@ description: 'Image support for Lightning Media.'
 type: module
 core: 8.x
 dependencies:
+  - dropzonejs_eb_widget
   - field_group
   - image
   - lightning_media

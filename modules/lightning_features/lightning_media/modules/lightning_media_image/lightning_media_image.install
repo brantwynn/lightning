@@ -1,0 +1,24 @@
+<?php
+
+use Drupal\entity_browser\Entity\EntityBrowser;
+
+/**
+ * Implements hook_install().
+ */
+function lightning_media_image_install() {
+  $browser = EntityBrowser::load('media_browser');
+
+  $browser->addWidget([
+    'settings' => [
+      'media_entity_bundle' => 'image',
+      'upload_location' => 'public://',
+      'dropzone_description' => t('Drop images here to upload them'),
+      'max_filesize' => '2M',
+      'extensions' => 'jpg jpeg gif png',
+    ],
+    'weight' => -9,
+    'label' => t('Upload Image'),
+    'id' => 'dropzonejs_media_entity',
+  ]);
+  $browser->save();
+}

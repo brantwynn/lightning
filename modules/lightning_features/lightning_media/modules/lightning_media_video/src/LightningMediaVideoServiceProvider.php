@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\lightning_media_video\LightningMediaVideoServiceProvider.
+ */
+
 namespace Drupal\lightning_media_video;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;

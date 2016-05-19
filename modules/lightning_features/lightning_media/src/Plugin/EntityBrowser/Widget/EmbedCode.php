@@ -64,12 +64,8 @@ class EmbedCode extends WidgetBase {
    *   The media bundle resolver.
    * @param \Drupal\Core\Session\AccountInterface $current_user
    *   The currently logged in user.
-   * @param \Drupal\Core\Entity\EntityFormBuilderInterface $entity_form_builder
-   *   The entity form builder service.
-   * @param \Drupal\Core\Entity\EntityFieldManagerInterface $entity_field_manager
-   *   The entity field manager service.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, EventDispatcherInterface $event_dispatcher, EntityManagerInterface $entity_manager, MediaBundleResolver $bundle_resolver, AccountInterface $current_user, EntityFormBuilderInterface $entity_form_builder, EntityFieldManagerInterface $entity_field_manager, FieldProxy $field_proxy) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, EventDispatcherInterface $event_dispatcher, EntityManagerInterface $entity_manager, MediaBundleResolver $bundle_resolver, AccountInterface $current_user, FieldProxy $field_proxy) {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $event_dispatcher, $entity_manager);
     $this->bundleResolver = $bundle_resolver;
     $this->currentUser = $current_user;

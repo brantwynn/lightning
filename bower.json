@@ -1,5 +1,7 @@
 {
-  "dependencies": {},
+  "dependencies": {
+    "dropzone": "^4.3.0"
+  },
   "name": "lightning",
   "private": true
 }

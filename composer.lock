@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "1cfd2a17ff75552bf10758c18dadb723",
-    "content-hash": "07ccb1a446a62f7e54bcf0ffc0e43d5e",
+    "hash": "bfbf295b90bdf80a0f36ef6fabe697ea",
+    "content-hash": "fc8b029353bb6aa54c9f437c06ce34f2",
     "packages": [
         {
             "name": "codegyre/robo",
@@ -1863,6 +1863,9 @@
             "extra": {
                 "branch-alias": {
                     "dev-8.x-1.x": "8.1.x-dev"
+                },
+                "patches_applied": {
+                    "View \"No results\" area doesn't appear even view has no results": "https://www.drupal.org/files/issues/no-wrapper-empty-rows-2701881-2.patch"
                 }
             },
             "notification-url": "https://packagist.drupal-composer.org/downloads/",

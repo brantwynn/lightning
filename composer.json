@@ -41,6 +41,10 @@
             ]
         },
         "patches": {
+            "drupal/entity_embed": {
+                "Hide Next button during Selection if Entity Browser is enabled":
+                "https://www.drupal.org/files/issues/2656062-8.patch"
+            },
             "drupal/field_group": {
                 "Field Group not working on node edit inside inline entity form":
                 "https://www.drupal.org/files/issues/field-group-2645570-8.x-1.0-rc4.patch"

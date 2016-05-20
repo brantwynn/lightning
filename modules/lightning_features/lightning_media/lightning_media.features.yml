@@ -4,6 +4,7 @@ required:
   - field.storage.media.field_media_in_library
   - field.storage.media.image
   - editor.editor.rich_text
+  - embed.button.media_browser
   - entity_browser.browser.media_browser
   - filter.format.rich_text
   - core.entity_view_mode.media.media_library

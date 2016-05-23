@@ -20,7 +20,7 @@ widget_selector_configuration: {  }
 widgets:
   134808d9-d854-4a0b-8699-d5eba006b8b7:
     settings:
-      view: media_library
+      view: media
       view_display: eb
     uuid: 134808d9-d854-4a0b-8699-d5eba006b8b7
     weight: -10

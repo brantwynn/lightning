@@ -332,4 +332,18 @@ class LightningSubContext extends DrupalSubContextBase implements DrupalSubConte
     $this->assertSession()->fieldExists($locator);
   }
 
+  /**
+   * @Then I should be visiting a media entity
+   */
+  public function assertVisitingMediaEntity() {
+    $this->assertSession()->addressMatches('/^\/media\/[0-9]+$/');
+  }
+
+  /**
+   * @BeforeScenario
+   */
+  public function setFilePath() {
+    $this->minkContext->setMinkParameter('files_path', __DIR__ . '/../../files');
+  }
+
 }

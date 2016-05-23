@@ -10,4 +10,3 @@ required:
   - core.entity_view_mode.media.media_library
   - user.role.media_creator
   - user.role.media_manager
-  - views.view.media_library

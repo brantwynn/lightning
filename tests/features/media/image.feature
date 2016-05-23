@@ -1,4 +1,4 @@
-@lightning @media @api
+@media @api
 Feature: Image media assets
   A media asset representing a locally hosted image.
 
@@ -11,6 +11,8 @@ Feature: Image media assets
     And I enter "Foobaz" for "Media name"
     And I press "Save and publish"
     Then I should be visiting a media entity
+    And I should see "Foobaz"
+    And I queue the latest media entity for deletion
 
 #  @javascript
 #  Scenario: Uploading an image from within CKEditor

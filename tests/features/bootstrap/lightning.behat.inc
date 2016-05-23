@@ -333,13 +333,24 @@ class LightningSubContext extends DrupalSubContextBase implements DrupalSubConte
   }
 
   /**
+   * Asserts that we are visiting a media entity.
+   *
    * @Then I should be visiting a media entity
    */
   public function assertVisitingMediaEntity() {
     $this->assertSession()->addressMatches('/^\/media\/[0-9]+$/');
+
+    try {
+      $this->assertSession()->statusCodeEquals(200);
+    }
+    catch (UnsupportedDriverActionException $e) {
+      // This isn't a critically important assertion, so don't worry about it.
+    }
   }
 
   /**
+   * Sets the absolute path to the directory containing uploadable files.
+   *
    * @BeforeScenario
    */
   public function setFilePath() {

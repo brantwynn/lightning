@@ -1,4 +1,4 @@
-@lightning @media @api
+@media @api
 Feature: Twitter media assets
   A media asset representing a tweet.
 
@@ -8,7 +8,11 @@ Feature: Twitter media assets
     When I visit "/media/add/tweet"
     And I enter "https://twitter.com/chx/status/493538461761028096" for "Tweet"
     And I wait for AJAX to finish
-    Then I should see a preview
+    And I enter "Foobaz" for "Media name"
+    And I press "Save and publish"
+    Then I should be visiting a media entity
+    And I should see "Foobaz"
+    And I queue the latest media entity for deletion
 
   Scenario: Viewing a tweet as an anonymous user
     Given tweet media from embed code:

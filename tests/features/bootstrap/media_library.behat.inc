@@ -51,17 +51,6 @@ class MediaLibrarySubContext extends DrupalSubContextBase implements DrupalSubCo
   }
 
   /**
-   * Opens the CKEditor media widget.
-   *
-   * @When I open the CKEditor media widget
-   */
-  public function openCkEditorMediaWidget() {
-    $this->minkContext->iWaitForAjaxToFinish();
-    $this->ckContext->execute('media_library');
-    $this->minkContext->iWaitForAjaxToFinish();
-  }
-
-  /**
    * Asserts that a jQuery UI dialog box is present.
    *
    * @param string $expected_title
@@ -183,6 +172,15 @@ class MediaLibrarySubContext extends DrupalSubContextBase implements DrupalSubCo
 
     $this->lightning->clickElementBySelector($selector);
     $this->minkContext->iWaitForAjaxToFinish();
+  }
+
+  /**
+   * @When I open the media browser
+   */
+  public function openMediaBrowser() {
+    $this->ckContext->execute('editdrupalentity', NULL, ['id' => 'media_browser']);
+    $this->minkContext->iWaitForAjaxToFinish();
+    $this->getSession()->getDriver()->switchToIFrame('entity-browser-iframe-media-browser');
   }
 
 }

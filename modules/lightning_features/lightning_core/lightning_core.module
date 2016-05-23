@@ -24,7 +24,7 @@ function lightning_core_node_type_insert(NodeTypeInterface $node_type) {
       'view own unpublished content',
       'create url aliases',
     ],
-  ])->save();
+  ])->setThirdPartySetting('lightning_core', 'content_role', 'creator')->save();
 
   Role::create([
     'id' => $node_type->id() . '_reviewer',
@@ -35,7 +35,7 @@ function lightning_core_node_type_insert(NodeTypeInterface $node_type) {
       'edit any ' . $node_type->id() . ' content',
       'delete any ' . $node_type->id() . ' content',
     ],
-  ])->save();
+  ])->setThirdPartySetting('lightning_core', 'content_role', 'reviewer')->save();
 }
 
 /**

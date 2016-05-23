@@ -1,6 +1,7 @@
 <?php
 
 use Drupal\embed\Entity\EmbedButton;
+use Drupal\entity_browser\Entity\EntityBrowser;
 use Drupal\file\Entity\File;
 use Drupal\node\Entity\NodeType;
 use Drupal\user\Entity\Role;
@@ -123,12 +124,9 @@ function lightning_media_update_8007() {
  */
 function lightning_media_update_8008() {
   $view = View::load('media');
-  $view->addDisplay('entity_browser', 'Browser', 'eb');
-  $display = &$view->getDisplay('eb');
+  $display_id = $view->addDisplay('entity_browser', 'Browser');
+  $display = &$view->getDisplay($display_id);
   $display = array_merge($display, array (
-    'display_plugin' => 'entity_browser',
-    'id' => 'eb',
-    'display_title' => 'Browser',
     'position' => 2,
     'display_options' =>
       array (
@@ -560,6 +558,14 @@ function lightning_media_update_8008() {
       ),
   ));
   $view->save();
+
+  $browser = EntityBrowser::load('media_browser');
+  $widgets = $browser->get('widgets');
+  if (isset($widgets['134808d9-d854-4a0b-8699-d5eba006b8b7'])) {
+    $widgets['134808d9-d854-4a0b-8699-d5eba006b8b7']['settings']['view_display'] = $display_id;
+    $browser->set('widgets', $widgets);
+    $browser->save();
+  }
 }
 
 /**

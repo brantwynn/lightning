@@ -153,7 +153,7 @@ abstract class PreviewHandlerBase implements PreviewHandlerInterface {
    */
   protected function getField(MediaInterface $entity) {
     $type_config = $entity->getType()->getConfiguration();
-    $id = $entity->getEntityTypeId() . '.' . $entity->bundle() . '.' .  $type_config['source_field'];
+    $id = $entity->getEntityTypeId() . '.' . $entity->bundle() . '.' . $type_config['source_field'];
 
     return $this->fieldStorage->load($id);
   }

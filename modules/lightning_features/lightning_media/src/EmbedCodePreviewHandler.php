@@ -71,6 +71,7 @@ class EmbedCodePreviewHandler extends PreviewHandlerBase {
    *
    * @param array $form
    *   The complete form.
+   * 
    * @return \Drupal\Core\Ajax\AjaxResponse
    *   The current form state.
    */

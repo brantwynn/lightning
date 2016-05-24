@@ -85,7 +85,7 @@ abstract class PreviewHandlerBase implements PreviewHandlerInterface {
   }
 
   /**
-   * #pre_render callback. Alters the group_metadata group.
+   * Pre-render callback. Alters the group_metadata group.
    *
    * @param array $form
    *   The form's render element.
@@ -153,7 +153,7 @@ abstract class PreviewHandlerBase implements PreviewHandlerInterface {
    */
   protected function getField(MediaInterface $entity) {
     $type_config = $entity->getType()->getConfiguration();
-    $id = $entity->getEntityTypeId() . '.' . $entity->bundle() . '.'.  $type_config['source_field'];
+    $id = $entity->getEntityTypeId() . '.' . $entity->bundle() . '.' .  $type_config['source_field'];
 
     return $this->fieldStorage->load($id);
   }

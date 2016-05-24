@@ -28,7 +28,7 @@ class FileUploadPreviewHandler extends PreviewHandlerBase {
   }
 
   /**
-   * #process callback. Sets the AJAX callback to static::uploadCallback().
+   * Process callback. Sets the AJAX callback to static::uploadCallback().
    *
    * @param array $element
    *   The file_managed element being processed.

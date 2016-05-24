@@ -1,6 +1,8 @@
 <?php
 
 use Drupal\Core\Entity\Entity\EntityFormDisplay;
+use Drupal\Core\Extension\Extension;
+use Drupal\Core\Extension\ExtensionDiscovery;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\media_entity\MediaBundleInterface;
@@ -52,6 +54,50 @@ function lightning_media_media_bundle_insert(MediaBundleInterface $bundle) {
       'display_label' => TRUE,
     ],
   ])->save();
+}
+
+/**
+ * Implements hook_library_info_alter().
+ */
+function lightning_media_library_info_alter(array &$libraries, $extension) {
+  if ($extension == 'lightning_media') {
+    // ModuleHandler::getModule() returns data only for installed
+    // modules. This is fine for installed profiles but not for inherited
+    // profiles (the base profile is not installed).
+    $listing = new ExtensionDiscovery(\Drupal::root());
+    $profiles = $listing->scan('profile');
+
+    // Get the path mappings of all profiles.
+    $profile_directories = array_map(function (Extension $profile) {
+      return $profile->getPath();
+    }, $profiles);
+
+    if (isset($profile_directories['lightning'])) {
+      $root = '/' . $profile_directories['lightning'];
+
+      foreach ($libraries as $key => $library) {
+        if ($key == 'media_library') {
+          continue;
+        }
+
+        if (isset($library['js'])) {
+          foreach ($library['js'] as $path => $info) {
+            $libraries[$key]['js'][$root . '/' . $path] = $info;
+            unset($libraries[$key]['js'][$path]);
+          }
+        }
+
+        if (isset($library['css'])) {
+          foreach ($library['css'] as $group => $files) {
+            foreach ($files as $path => $info) {
+              $libraries[$key]['css'][$group][$root . '/' . $path] = $info;
+              unset($libraries[$key]['css'][$group][$path]);
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 /**

@@ -41,6 +41,9 @@
             ]
         },
         "patches": {
+            "drupal/entity_browser": {
+                "Tabs wrapper should not apply CSS classes": "https://www.drupal.org/files/issues/2732419-3.patch"
+            },
             "drupal/entity_embed": {
                 "Hide Next button during Selection if Entity Browser is enabled": "https://www.drupal.org/files/issues/2656062-8.patch"
             },

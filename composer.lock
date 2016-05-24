@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "bfbf295b90bdf80a0f36ef6fabe697ea",
-    "content-hash": "fc8b029353bb6aa54c9f437c06ce34f2",
+    "hash": "419eb5b36f48c74b4dcf1b7a0eb8ed95",
+    "content-hash": "13c5e3ac14d4e0e0e95149e903fa88d7",
     "packages": [
         {
             "name": "codegyre/robo",
@@ -1126,7 +1126,7 @@
             "source": {
                 "type": "git",
                 "url": "https://git.drupal.org/project/entity_browser.git",
-                "reference": "c22460474ebd99d6f48f8d9746622c230cc01853"
+                "reference": "3bef66d99aa807ee84d1e3c7b1e6ad6f43a4caad"
             },
             "require": {
                 "drupal/core": "8.*"
@@ -1147,6 +1147,9 @@
             "extra": {
                 "branch-alias": {
                     "dev-8.x-1.x": "8.1.x-dev"
+                },
+                "patches_applied": {
+                    "Tabs wrapper should not apply CSS classes": "https://www.drupal.org/files/issues/2732419-3.patch"
                 }
             },
             "notification-url": "https://packagist.drupal-composer.org/downloads/",
@@ -1172,7 +1175,7 @@
             ],
             "description": "Provide a generic entity browser/picker/selector.",
             "homepage": "http://drupal.org/project/entity_browser",
-            "time": "2016-05-20 09:18:08"
+            "time": "2016-05-24 11:16:27"
         },
         {
             "name": "drupal/entity_embed",

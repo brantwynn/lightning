@@ -180,7 +180,14 @@ class MediaLibrarySubContext extends DrupalSubContextBase implements DrupalSubCo
   public function openMediaBrowser() {
     $this->ckContext->execute('editdrupalentity', NULL, ['id' => 'media_browser']);
     $this->minkContext->iWaitForAjaxToFinish();
-    $this->getSession()->getDriver()->switchToIFrame('entity-browser-iframe-media-browser');
+    $this->getSession()->switchToIFrame('entity-browser-iframe-media-browser');
+  }
+
+  /**
+   * @Then CKEditor should have an embedded entity
+   */
+  public function assertCkEditorEmbed() {
+    $this->ckContext->assertEditorMatch('/data-entity-id="[0-9]+"/');
   }
 
 }

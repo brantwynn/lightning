@@ -357,4 +357,11 @@ class LightningSubContext extends DrupalSubContextBase implements DrupalSubConte
     $this->minkContext->setMinkParameter('files_path', __DIR__ . '/../../files');
   }
 
+  /**
+   * @When I switch to the window
+   */
+  public function switchToWindow() {
+    $this->getSession()->switchToWindow();
+  }
+
 }

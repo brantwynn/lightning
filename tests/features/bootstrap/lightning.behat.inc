@@ -324,7 +324,10 @@ class LightningSubContext extends DrupalSubContextBase implements DrupalSubConte
   }
 
   /**
-   * @param $locator
+   * Assets that a field exists.
+   *
+   * @param string $locator
+   *   The field ID, name, label, or value.
    *
    * @Then I should see a :locator field
    */
@@ -358,6 +361,8 @@ class LightningSubContext extends DrupalSubContextBase implements DrupalSubConte
   }
 
   /**
+   * Switches out of an iframe into the main window.
+   *
    * @When I switch to the window
    */
   public function switchToWindow() {

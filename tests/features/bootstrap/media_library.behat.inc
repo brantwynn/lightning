@@ -116,6 +116,8 @@ class MediaLibrarySubContext extends DrupalSubContextBase implements DrupalSubCo
   }
 
   /**
+   * Opens the media browser.
+   *
    * @When I open the media browser
    */
   public function openMediaBrowser() {
@@ -125,6 +127,8 @@ class MediaLibrarySubContext extends DrupalSubContextBase implements DrupalSubCo
   }
 
   /**
+   * Asserts that CKEditor's content contains an Entity Embed reference.
+   *
    * @Then CKEditor should have an embedded entity
    */
   public function assertCkEditorEmbed() {

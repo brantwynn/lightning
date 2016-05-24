@@ -1,16 +1,14 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\lightning_media_video\LightningMediaVideoServiceProvider.
- */
-
 namespace Drupal\lightning_media_video;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\Core\DependencyInjection\ServiceProviderBase;
 use Symfony\Component\DependencyInjection\Reference;
 
+/**
+ * Service provider for Lightning Media Video module.
+ */
 class LightningMediaVideoServiceProvider extends ServiceProviderBase {
 
   /**

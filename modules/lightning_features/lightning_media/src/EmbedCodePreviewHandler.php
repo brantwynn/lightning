@@ -10,15 +10,28 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\TranslationInterface;
 
+/**
+ * Preview handler for media bundles which require an embed code.
+ */
 class EmbedCodePreviewHandler extends PreviewHandlerBase {
 
   use DependencySerializationTrait;
 
   /**
+   * The entity view builder.
+   *
    * @var \Drupal\Core\Entity\EntityViewBuilderInterface
    */
   protected $viewBuilder;
 
+  /**
+   * EmbedCodePreviewHandler constructor.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_manager
+   *   The entity manager.
+   * @param \Drupal\Core\StringTranslation\TranslationInterface $translator
+   *   The string translation service.
+   */
   public function __construct(EntityTypeManagerInterface $entity_manager, TranslationInterface $translator) {
     parent::__construct($entity_manager, $translator);
     $this->viewBuilder = $entity_manager->getViewBuilder('media');
@@ -53,6 +66,14 @@ class EmbedCodePreviewHandler extends PreviewHandlerBase {
     }
   }
 
+  /**
+   * AJAX callback. Returns the commands for displaying a live preview.
+   *
+   * @param array $form
+   *   The complete form.
+   * @return \Drupal\Core\Ajax\AjaxResponse
+   *   The current form state.
+   */
   public static function getPreviewContent(array &$form) {
     $response = new AjaxResponse();
 

@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\lightning_media\MediaBundleResolver.
- */
-
 namespace Drupal\lightning_media;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -66,8 +61,13 @@ class MediaBundleResolver {
   }
 
   /**
-   * @param $embed_code
+   * Determines the media bundle that can handle a specific embed code.
+   *
+   * @param string $embed_code
+   *   The embed code.
+   *
    * @return \Drupal\media_entity\MediaBundleInterface|FALSE
+   *   The matching bundle, or FALSE if there isn't one.
    */
   public function getBundleFromEmbedCode($embed_code) {
     switch (TRUE) {

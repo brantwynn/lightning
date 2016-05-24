@@ -1,15 +1,9 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\lightning_media\Plugin\EntityBrowser\Widget\EmbedCode.
- */
-
 namespace Drupal\lightning_media\Plugin\EntityBrowser\Widget;
 
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Render\Element;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\entity_browser\WidgetBase;
 use Drupal\lightning_media\FieldProxy;
@@ -18,8 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
- * An Entity Browser widget allowing the creation of different types of media
- * entities from embed codes.
+ * An Entity Browser widget for creating media entities from embed codes.
  *
  * @EntityBrowserWidget(
  *   id = "embed_code",
@@ -44,6 +37,8 @@ class EmbedCode extends WidgetBase {
   protected $currentUser;
 
   /**
+   * The field proxy service.
+   *
    * @var \Drupal\lightning_media\FieldProxy
    */
   protected $fieldProxy;

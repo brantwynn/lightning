@@ -1,0 +1,34 @@
+nav.eb-tabs {
+  ul {
+    border-bottom-color: #d0d0d0;
+
+    li {
+      a {
+        border-radius: 1em 1em 0 0;
+      }
+
+      &.active {
+        border-bottom-width: 0;
+
+        a {
+          background-color: #d6d6d6;
+        }
+      }
+    }
+  }
+}
+
+.view.eb-media {
+  .views-exposed-form {
+    padding: 1.5em;
+    background-color: #EFEFEF;
+
+    .form--inline {
+      .form-item, .form-actions {
+        margin-top: 0;
+        margin-bottom: 0;
+        display: inline-block;
+      }
+    }
+  }
+}

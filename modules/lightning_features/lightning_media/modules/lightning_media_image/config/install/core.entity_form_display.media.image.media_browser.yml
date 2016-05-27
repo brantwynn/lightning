@@ -9,7 +9,6 @@ dependencies:
     - media_entity.bundle.image
   module:
     - image
-    - workbench_moderation
 id: media.image.media_browser
 targetEntityType: media
 bundle: image

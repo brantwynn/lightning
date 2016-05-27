@@ -4,6 +4,7 @@ namespace Drupal\lightning_media;
 
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\InvokeCommand;
+use Drupal\Core\DependencyInjection\DependencySerializationTrait;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -16,6 +17,7 @@ use Drupal\media_entity\MediaInterface;
  */
 abstract class PreviewHandlerBase implements PreviewHandlerInterface {
 
+  use DependencySerializationTrait;
   use StringTranslationTrait;
 
   /**

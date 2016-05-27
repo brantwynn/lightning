@@ -1,20 +1,25 @@
 services:
-  lightning.media.bundle_resolver:
-    class: '\Drupal\lightning_media\MediaBundleResolver'
+  plugin.manager.lightning_media.bundle_resolver:
+    class: '\Drupal\Core\Plugin\DefaultPluginManager'
     arguments:
-      - '@entity_type.manager'
-      - '@typed_data_manager'
+      - 'Plugin/MediaBundleResolver'
+      - '@container.namespaces'
       - '@module_handler'
+      - '\Drupal\lightning_media\BundleResolverInterface'
+      - '\Drupal\lightning_media\Annotation\MediaBundleResolver'
+
   lightning_media.preview.file_upload:
-    class: '\Drupal\lightning_media\FileUploadPreviewHandler'
+    class: '\Drupal\lightning_media\PreviewHandler\FileUpload'
     arguments:
       - '@entity_type.manager'
       - '@string_translation'
+
   lightning_media.preview.embed_code:
-    class: '\Drupal\lightning_media\EmbedCodePreviewHandler'
+    class: '\Drupal\lightning_media\PreviewHandler\EmbedCode'
     arguments:
       - '@entity_type.manager'
       - '@string_translation'
+
   lightning_media.field_proxy:
     class: '\Drupal\lightning_media\FieldProxy'
     arguments:

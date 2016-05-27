@@ -2,10 +2,10 @@
 
 namespace Drupal\lightning_media\Plugin\EntityBrowser\Widget;
 
+use Drupal\Core\Ajax\HtmlCommand;
+use Drupal\Core\Ajax\InvokeCommand;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\file\Element\ManagedFile;
-use Drupal\file\FileInterface;
-use Drupal\lightning_media\FieldProxy;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
  *   bundle_resolver = "file_upload"
  * )
  */
-class FileUpload extends ProxyWidgetBase {
+class FileUpload extends EntityFormProxy {
 
   /**
    * {@inheritdoc}
@@ -41,27 +41,65 @@ class FileUpload extends ProxyWidgetBase {
       '#title' => $this->t('File'),
       '#process' => [
         [ManagedFile::class, 'processManagedFile'],
-        [$this, 'processFileElement'],
+        [$this, 'processInitialFileElement'],
       ]
     );
 
     return $form;
   }
 
-  public function processFileElement(array $element) {
+  public function processInitialFileElement(array $element) {
     $element['upload_button']['#ajax']['callback'] = [$this, 'onUpload'];
+    $element['remove_button']['#value'] = $this->t('Cancel');
     $element['remove_button']['#ajax']['callback'] = [$this, 'onRemove'];
+    return $element;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function processEntityForm(array $entity_form) {
+    $type_config = $entity_form['#entity']->getType()->getConfiguration();
+    $field = $type_config['source_field'];
+
+    if (isset($entity_form[$field])) {
+      $entity_form[$field]['widget'][0]['#process'][] = [$this, 'processEntityFormFileElement'];
+    }
+
+    return parent::processEntityForm($entity_form);
+  }
+
+  public function processEntityFormFileElement(array $element, FormStateInterface $form_state, array &$complete_form) {
+    $element['remove_button']['#access'] = FALSE;
+
+    if ($element['#default_value']) {
+      $key = 'file_' . $element['#default_value']['target_id'];
+      $element[$key]['#access'] = FALSE;
+    }
+
     return $element;
   }
 
   public function onUpload(array &$form, FormStateInterface $form_state, Request $request) {
     $response = ManagedFile::uploadAjaxCallback($form, $form_state, $request);
-    return $this->onInput($form, $form_state, $request, $response);
+
+    $complete_form = $form_state->getCompleteForm();
+    $selector = '#' . $complete_form['widget']['ief_target']['#id'];
+    $content = $this->getEntityForm($complete_form, $form_state);
+
+    $command = new HtmlCommand($selector, $content);
+    $response->addCommand($command);
+    return $response;
   }
 
   public function onRemove(array &$form, FormStateInterface $form_state, Request $request) {
     $response = ManagedFile::uploadAjaxCallback($form, $form_state, $request);
-    return $this->onClear($form, $form_state, $request, $response);
+
+    $complete_form = $form_state->getCompleteForm();
+    $selector = '#' . $complete_form['widget']['ief_target']['#id'];
+
+    $command = new InvokeCommand($selector, 'empty');
+    return $response->addCommand($command);
   }
 
 }

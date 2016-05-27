@@ -97,7 +97,7 @@ abstract class PreviewHandlerBase implements PreviewHandlerInterface {
    */
   public function prepareMetaData(array $form) {
     $form['group_metadata']['#attributes']['class'][] = 'metadata';
-    $form['group_metadata']['#attributes']['style'] = ['display: none;'];
+    // $form['group_metadata']['#attributes']['style'] = ['display: none;'];
     return $form;
   }
 

@@ -4,8 +4,6 @@ namespace Drupal\lightning_media\Plugin\EntityBrowser\Widget;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\lightning_media\FieldProxy;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * An Entity Browser widget for creating media entities from embed codes.
@@ -17,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
  *   bundle_resolver = "embed_code"
  * )
  */
-class EmbedCode extends ProxyWidgetBase {
+class EmbedCode extends EntityFormProxy {
 
   /**
    * {@inheritdoc}
@@ -37,25 +35,13 @@ class EmbedCode extends ProxyWidgetBase {
       '#placeholder' => $this->t('Enter a URL...'),
       '#ajax' => array(
         'event' => 'change',
-        'callback' => [$this, 'onInput'],
+        'wrapper' => $form['ief_target']['#id'],
+        'method' => 'html',
+        'callback' => [$this, 'getEntityForm'],
       ),
     );
 
     return $form;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function onInput(array &$form, FormStateInterface $form_state, Request $request, Response $response = NULL) {
-    $input = $this->getInputValue($form_state);
-
-    if ($input) {
-      return parent::onInput($form, $form_state, $request, $response);
-    }
-    else {
-      return $this->onClear($form, $form_state, $request, $response);
-    }
   }
 
 }

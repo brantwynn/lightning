@@ -19,9 +19,3 @@ services:
     arguments:
       - '@entity_type.manager'
       - '@string_translation'
-
-  lightning_media.field_proxy:
-    class: '\Drupal\lightning_media\FieldProxy'
-    arguments:
-      - '@entity_field.manager'
-      - '@entity.form_builder'

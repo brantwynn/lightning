@@ -1,5 +1,6 @@
 <?php
 
+use Drupal\editor\Entity\Editor;
 use Drupal\embed\Entity\EmbedButton;
 use Drupal\entity_browser\Entity\EntityBrowser;
 use Drupal\file\Entity\File;
@@ -566,6 +567,26 @@ function lightning_media_update_8008() {
     $widgets['134808d9-d854-4a0b-8699-d5eba006b8b7']['settings']['view_display'] = $display_id;
     $browser->set('widgets', $widgets);
     $browser->save();
+  }
+}
+
+/**
+ * Changes the media_library CKEditor button to media_browser.
+ */
+function lightning_media_update_8009() {
+  /** @var \Drupal\editor\EditorInterface $editor */
+  $editor = Editor::load('rich_text');
+  if ($editor) {
+    $settings = $editor->getSettings();
+    foreach ($settings['toolbar']['rows'] as &$row) {
+      foreach ($row as &$group) {
+        $index = array_search('media_library', $group['items']);
+        if ($index !== FALSE) {
+          $group['items'][$index] = 'media_browser';
+        }
+      }
+    }
+    $editor->setSettings($settings)->save();
   }
 }
 

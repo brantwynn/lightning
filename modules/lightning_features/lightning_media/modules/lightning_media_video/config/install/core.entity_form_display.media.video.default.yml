@@ -6,29 +6,8 @@ dependencies:
     - field.field.media.video.field_media_video_embed_field
     - media_entity.bundle.video
   module:
-    - field_group
     - video_embed_field
-third_party_settings:
-  field_group:
-    group_metadata:
-      children:
-        - name
-        - field_media_in_library
-      parent_name: ''
-      weight: 2
-      label: Metadata
-      format_type: html_element
-      format_settings:
-        label: Metadata
-        element: div
-        show_label: false
-        label_element: h3
-        attributes: ''
-        effect: none
-        speed: fast
-        id: ''
-        classes: ''
-        required_fields: true
+third_party_settings: { }
 id: media.video.default
 targetEntityType: media
 bundle: video

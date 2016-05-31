@@ -5,29 +5,7 @@ dependencies:
     - field.field.media.instagram.embed_code
     - field.field.media.instagram.field_media_in_library
     - media_entity.bundle.instagram
-  module:
-    - field_group
-third_party_settings:
-  field_group:
-    group_metadata:
-      children:
-        - name
-        - field_media_in_library
-      parent_name: ''
-      weight: 1
-      label: Metadata
-      format_type: html_element
-      format_settings:
-        label: Metadata
-        element: div
-        show_label: false
-        label_element: h3
-        attributes: ''
-        effect: none
-        speed: fast
-        id: ''
-        classes: ''
-        required_fields: true
+third_party_settings: { }
 id: media.instagram.default
 targetEntityType: media
 bundle: instagram

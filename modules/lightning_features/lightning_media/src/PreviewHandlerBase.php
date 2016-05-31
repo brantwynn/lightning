@@ -2,8 +2,6 @@
 
 namespace Drupal\lightning_media;
 
-use Drupal\Core\Ajax\AjaxResponse;
-use Drupal\Core\Ajax\InvokeCommand;
 use Drupal\Core\DependencyInjection\DependencySerializationTrait;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -78,42 +76,6 @@ abstract class PreviewHandlerBase implements PreviewHandlerInterface {
    * {@inheritdoc}
    */
   public function alterForm(array &$form, FormStateInterface $form_state, EntityInterface $entity = NULL) {
-    $entity = $entity ?: $this->getEntity($form_state);
-
-    // #form_mode will be set if $form is an IEF element.
-    $display = $this->getDisplay($entity, @$form['#form_mode']);
-    if ($display->getThirdPartySetting('field_group', 'group_metadata')) {
-      $form['#pre_render'][] = [$this, 'prepareMetaData'];
-    }
-  }
-
-  /**
-   * Pre-render callback. Alters the group_metadata group.
-   *
-   * @param array $form
-   *   The form's render element.
-   *
-   * @return array
-   *   The modified form element.
-   */
-  public function prepareMetaData(array $form) {
-    $form['group_metadata']['#attributes']['class'][] = 'metadata';
-    $form['group_metadata']['#attributes']['style'] = ['display: none;'];
-    return $form;
-  }
-
-  /**
-   * AJAX callback helper. Adds a command to show or hide the metadata group.
-   *
-   * @param \Drupal\Core\Ajax\AjaxResponse $response
-   *   The outgoing AJAX response.
-   *
-   * @return \Drupal\Core\Ajax\AjaxResponse
-   *   The modified AJAX response.
-   */
-  protected static function toggleMetaData(AjaxResponse $response) {
-    $command = new InvokeCommand('.metadata', 'toggle', [600]);
-    return $response->addCommand($command);
   }
 
   /**

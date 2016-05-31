@@ -79,7 +79,7 @@ class EmbedCode extends PreviewHandlerBase {
     $command = new HtmlCommand('#edit-preview', $form['preview']['entity']);
     $response->addCommand($command);
 
-    return static::toggleMetaData($response);
+    return $response;
   }
 
 }

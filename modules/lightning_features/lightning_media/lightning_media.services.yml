@@ -8,12 +8,6 @@ services:
       - '\Drupal\lightning_media\BundleResolverInterface'
       - '\Drupal\lightning_media\Annotation\MediaBundleResolver'
 
-  lightning_media.preview.file_upload:
-    class: '\Drupal\lightning_media\PreviewHandler\FileUpload'
-    arguments:
-      - '@entity_type.manager'
-      - '@string_translation'
-
   lightning_media.preview.embed_code:
     class: '\Drupal\lightning_media\PreviewHandler\EmbedCode'
     arguments:

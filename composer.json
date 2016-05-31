@@ -104,7 +104,6 @@
         "drupal/entity_browser": "dev-8.x-1.x",
         "drupal/views_infinite_scroll": "^8.1",
         "drupal/video_embed_field": "8.1.0-rc8",
-        "drupal/field_group": "^8.1.0",
         "drupal/media_entity_document": "dev-8.x-1.x"
     }
 }

@@ -3,8 +3,6 @@ description: 'Video support for Lightning Media.'
 type: module
 core: 8.x
 dependencies:
-  - field_group
-  - image
   - lightning_media
   - video_embed_media
 version: 8.x-1.0-rc6

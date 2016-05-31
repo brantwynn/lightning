@@ -14,7 +14,7 @@ function lightning_media_twitter_form_media_tweet_form_alter(array &$form, FormS
  */
 function lightning_media_twitter_inline_entity_form_entity_form_alter(&$entity_form, FormStateInterface $form_state) {
   if ($entity_form['#entity_type'] == 'media' && $entity_form['#bundle'] == 'tweet') {
-    \Drupal::service('lightning_media.preview.file_upload')->alterForm($entity_form, $form_state, $entity_form['#entity']);
+    \Drupal::service('lightning_media.preview.embed_code')->alterForm($entity_form, $form_state, $entity_form['#entity']);
   }
 }
 

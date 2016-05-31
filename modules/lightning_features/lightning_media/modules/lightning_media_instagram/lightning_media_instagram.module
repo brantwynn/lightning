@@ -14,7 +14,7 @@ function lightning_media_instagram_form_media_instagram_form_alter(array &$form,
  */
 function lightning_media_instagram_inline_entity_form_entity_form_alter(&$entity_form, FormStateInterface $form_state) {
   if ($entity_form['#entity_type'] == 'media' && $entity_form['#bundle'] == 'instagram') {
-    \Drupal::service('lightning_media.preview.file_upload')->alterForm($entity_form, $form_state, $entity_form['#entity']);
+    \Drupal::service('lightning_media.preview.embed_code')->alterForm($entity_form, $form_state, $entity_form['#entity']);
   }
 }
 

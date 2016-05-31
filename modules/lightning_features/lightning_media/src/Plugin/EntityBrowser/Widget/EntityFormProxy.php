@@ -4,7 +4,6 @@ namespace Drupal\lightning_media\Plugin\EntityBrowser\Widget;
 
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Render\Element;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\entity_browser\WidgetBase;
 use Drupal\inline_entity_form\Element\InlineEntityForm;
@@ -12,6 +11,9 @@ use Drupal\lightning_media\BundleResolverInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+/**
+ * Base class for EB widgets which wrap around an (inline) entity form.
+ */
 abstract class EntityFormProxy extends WidgetBase {
 
   /**
@@ -28,6 +30,16 @@ abstract class EntityFormProxy extends WidgetBase {
    */
   protected $currentUser;
 
+  /**
+   * Returns the current input value, if any.
+   *
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current form state.
+   *
+   * @return mixed
+   *   The input value, ready for further processing. Nothing will be done with
+   *   the value if it's empty.
+   */
   abstract protected function getInputValue(FormStateInterface $form_state);
 
   /**
@@ -107,10 +119,30 @@ abstract class EntityFormProxy extends WidgetBase {
     return $form;
   }
 
+  /**
+   * Performs additional processing on the inline entity form.
+   *
+   * @param array $entity_form
+   *   The processed inline entity form element.
+   *
+   * @return array
+   *   The processed element.
+   */
   public function processEntityForm(array $entity_form) {
     return $entity_form;
   }
 
+  /**
+   * AJAX callback. Returns the inline entity form.
+   *
+   * @param array $form
+   *   The complete form.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current form state.
+   *
+   * @return array
+   *   The renderable inline entity form.
+   */
   public function getEntityForm(array &$form, FormStateInterface $form_state) {
     return $form['widget']['entity'];
   }
@@ -145,11 +177,12 @@ abstract class EntityFormProxy extends WidgetBase {
   /**
    * Generates a media entity from an embed code.
    *
-   * @param string $embed_code
-   *   The embed code.
+   * @param string $input
+   *   The input value from which to generate the entity.
    *
-   * @return \Drupal\media_entity\MediaInterface
-   *   The new, unsaved media entity.
+   * @return \Drupal\media_entity\MediaInterface|NULL
+   *   A new, unsaved media entity, or NULL if the input value could not be
+   *   handled by any existing media bundles.
    */
   protected function generateEntity($input) {
     $bundle = $this->bundleResolver->getBundle($input);

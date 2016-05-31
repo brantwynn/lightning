@@ -3,7 +3,6 @@
 namespace Drupal\lightning_media\Plugin\EntityBrowser\Widget;
 
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\lightning_media\FieldProxy;
 
 /**
  * An Entity Browser widget for creating media entities from embed codes.

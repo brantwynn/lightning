@@ -3,8 +3,12 @@
 namespace Drupal\lightning_media;
 
 /**
- * Interface for plugins which determine which media bundle(s) are appropriate
- * for handling an input value.
+ * Interface for media bundle resolvers.
+ *
+ * Media bundle resolvers are plugins which determine which media bundle(s) are
+ * appropriate for handling an input value. The input value can be of any type,
+ * and the resolver needs to figure out which media bundle -- singular! -- is
+ * best suited to handle that input.
  */
 interface BundleResolverInterface {
 

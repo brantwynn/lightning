@@ -12,6 +12,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 
 /**
+ * Bundle resolver for embed codes.
+ *
  * @MediaBundleResolver(
  *   id = "embed_code",
  *   field_types = {"string", "string_long", "video_embed_field"}

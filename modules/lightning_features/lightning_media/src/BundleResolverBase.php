@@ -8,18 +8,37 @@ use Drupal\Core\Plugin\PluginBase;
 use Drupal\media_entity\MediaBundleInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ * Base class for media bundle resolvers.
+ */
 abstract class BundleResolverBase extends PluginBase implements BundleResolverInterface, ContainerFactoryPluginInterface {
 
   /**
+   * The media bundle entity storage handler.
+   *
    * @var \Drupal\Core\Entity\EntityStorageInterface
    */
   protected $bundleStorage;
 
   /**
+   * The configurable field entity storage handler.
+   *
    * @var \Drupal\Core\Entity\EntityStorageInterface
    */
   protected $fieldStorage;
 
+  /**
+   * BundleResolverBase constructor.
+   *
+   * @param array $configuration
+   *   The plugin configuration.
+   * @param string $plugin_id
+   *   The plugin ID.
+   * @param mixed $plugin_definition
+   *   The plugin definition.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager service.
+   */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityTypeManagerInterface $entity_type_manager) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->bundleStorage = $entity_type_manager->getStorage('media_bundle');
@@ -39,7 +58,10 @@ abstract class BundleResolverBase extends PluginBase implements BundleResolverIn
   }
 
   /**
+   * Returns all possible bundles for the field type(s) this plugin supports.
+   *
    * @return MediaBundleInterface[]
+   *   Applicable media bundles, keyed by ID.
    */
   protected function getPossibleBundles() {
     $plugin_definition = $this->getPluginDefinition();
@@ -53,7 +75,13 @@ abstract class BundleResolverBase extends PluginBase implements BundleResolverIn
   }
 
   /**
+   * Returns the source field for a media bundle.
+   *
+   * @param \Drupal\media_entity\MediaBundleInterface $bundle
+   *   The media bundle entity.
+   *
    * @return \Drupal\Core\Field\FieldConfigInterface
+   *   The configurable source field entity.
    */
   protected function getSourceField(MediaBundleInterface $bundle) {
     $type_config = $bundle->getType()->getConfiguration();

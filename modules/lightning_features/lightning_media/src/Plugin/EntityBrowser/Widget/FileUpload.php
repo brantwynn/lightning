@@ -42,12 +42,21 @@ class FileUpload extends EntityFormProxy {
       '#process' => [
         [ManagedFile::class, 'processManagedFile'],
         [$this, 'processInitialFileElement'],
-      ]
+      ],
     );
 
     return $form;
   }
 
+  /**
+   * Processes the file element that is NOT part of the entity form.
+   *
+   * @param array $element
+   *   The file element.
+   *
+   * @return array
+   *   The processed file element.
+   */
   public function processInitialFileElement(array $element) {
     $element['upload_button']['#ajax']['callback'] = [$this, 'onUpload'];
     $element['remove_button']['#value'] = $this->t('Cancel');
@@ -69,7 +78,16 @@ class FileUpload extends EntityFormProxy {
     return parent::processEntityForm($entity_form);
   }
 
-  public function processEntityFormFileElement(array $element, FormStateInterface $form_state, array &$complete_form) {
+  /**
+   * Processes the file element that IS part of the entity form.
+   *
+   * @param array $element
+   *   The file element.
+   *
+   * @return array
+   *   The processed file element.
+   */
+  public function processEntityFormFileElement(array $element) {
     $element['remove_button']['#access'] = FALSE;
 
     if ($element['#default_value']) {
@@ -80,6 +98,19 @@ class FileUpload extends EntityFormProxy {
     return $element;
   }
 
+  /**
+   * AJAX callback. Responds when a file has been uploaded.
+   *
+   * @param array $form
+   *   The complete form.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current form state.
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The current HTTP request.
+   *
+   * @return \Drupal\Core\Ajax\AjaxResponse
+   *   The AJAX response.
+   */
   public function onUpload(array &$form, FormStateInterface $form_state, Request $request) {
     $response = ManagedFile::uploadAjaxCallback($form, $form_state, $request);
 
@@ -92,6 +123,19 @@ class FileUpload extends EntityFormProxy {
     return $response;
   }
 
+  /**
+   * AJAX callback. Responds when the uploaded file is removed.
+   *
+   * @param array $form
+   *   The complete form.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current form state.
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The current HTTP request.
+   *
+   * @return \Drupal\Core\Ajax\AjaxResponse
+   *   The AJAX response.
+   */
   public function onRemove(array &$form, FormStateInterface $form_state, Request $request) {
     $response = ManagedFile::uploadAjaxCallback($form, $form_state, $request);
 

@@ -6,6 +6,8 @@ use Drupal\file\FileInterface;
 use Drupal\lightning_media\BundleResolverBase;
 
 /**
+ * Bundle resolver for uploaded files.
+ *
  * @MediaBundleResolver(
  *   id = "file_upload",
  *   field_types = {"file", "image"}

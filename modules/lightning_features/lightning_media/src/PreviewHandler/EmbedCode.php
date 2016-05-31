@@ -73,7 +73,7 @@ class EmbedCode extends PreviewHandlerBase {
    * @return \Drupal\Core\Ajax\AjaxResponse
    *   The current form state.
    */
-  public static function getPreviewContent(array &$form) {
+  public function getPreviewContent(array &$form) {
     $response = new AjaxResponse();
 
     $command = new HtmlCommand('#edit-preview', $form['preview']['entity']);

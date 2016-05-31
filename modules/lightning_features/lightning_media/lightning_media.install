@@ -88,9 +88,12 @@ function lightning_media_update_8004() {
 }
 
 /**
- * Installs the embed button for the media browser.
+ * Installs the media browser and its embed button.
  */
 function lightning_media_update_8005() {
+  $browser = lightning_read_config('entity_browser.browser.media_browser', 'lightning_media');
+  EntityBrowser::create($browser)->save();
+
   $button = lightning_read_config('embed.button.media_browser', 'lightning_media');
   EmbedButton::create($button)->save();
 }
@@ -588,6 +591,13 @@ function lightning_media_update_8009() {
     }
     $editor->setSettings($settings)->save();
   }
+}
+
+/**
+ * Installs document support for Lightning Media.
+ */
+function lightning_media_update_8010() {
+  \Drupal::service('module_installer')->install(['lightning_media_document']);
 }
 
 /**

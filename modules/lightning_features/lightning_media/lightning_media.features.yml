@@ -2,7 +2,6 @@ bundle: lightning
 required:
   - core.entity_form_mode.media.media_browser
   - core.entity_view_mode.media.embedded
-  - core.entity_view_mode.media.media_library
   - editor.editor.rich_text
   - embed.button.media_browser
   - entity_browser.browser.media_browser

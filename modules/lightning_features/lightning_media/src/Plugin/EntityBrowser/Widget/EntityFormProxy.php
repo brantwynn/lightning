@@ -82,6 +82,7 @@ abstract class EntityFormProxy extends WidgetBase {
       'ief_target' => array(
         '#type' => 'container',
         '#id' => 'ief-target',
+        '#weight' => 10,
       ),
     );
 

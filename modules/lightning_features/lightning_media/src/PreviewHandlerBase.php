@@ -80,7 +80,8 @@ abstract class PreviewHandlerBase implements PreviewHandlerInterface {
   public function alterForm(array &$form, FormStateInterface $form_state, EntityInterface $entity = NULL) {
     $entity = $entity ?: $this->getEntity($form_state);
 
-    $display = $this->getDisplay($entity);
+    // #form_mode will be set if $form is an IEF element.
+    $display = $this->getDisplay($entity, $form['#form_mode']);
     if ($display->getThirdPartySetting('field_group', 'group_metadata')) {
       $form['#pre_render'][] = [$this, 'prepareMetaData'];
     }
@@ -135,12 +136,14 @@ abstract class PreviewHandlerBase implements PreviewHandlerInterface {
    *
    * @param \Drupal\media_entity\MediaInterface $entity
    *   The media entity whose form is being displayed.
+   * @param string $display_mode
+   *   (optional) The form display mode. Defaults to 'default'.
    *
    * @return \Drupal\Core\Entity\Display\EntityFormDisplayInterface
    *   The form's display configuration.
    */
-  protected function getDisplay(MediaInterface $entity) {
-    $id = $entity->getEntityTypeId() . '.' . $entity->bundle() . '.default';
+  protected function getDisplay(MediaInterface $entity, $display_mode = 'default') {
+    $id = $entity->getEntityTypeId() . '.' . $entity->bundle() . '.' . $display_mode;
     return $this->displayStorage->load($id);
   }
 

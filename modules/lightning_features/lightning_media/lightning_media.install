@@ -27,17 +27,10 @@ function lightning_media_install() {
 
 /**
  * Updates the media_library view, installs Services module, and creates the
- * lightning_media service endpoint.
+ * lightning_media service endpoint. (defunct)
  */
 function lightning_media_update_8001() {
-  if (! \Drupal::moduleHandler()->moduleExists('services')) {
-    \Drupal::service('module_installer')->install(['services']);
-  }
-
-  // Update the media_library view by deleting and re-creating it.
-  View::load('media_library')->delete();
-  $values = lightning_read_config('views.view.media_library', 'lightning_media');
-  View::create($values)->save();
+  // This update no longer applies as of Lightning 8.x-1.0-rc6.
 }
 
 /**
@@ -91,6 +84,10 @@ function lightning_media_update_8004() {
  * Installs the media browser and its embed button.
  */
 function lightning_media_update_8005() {
+  if (! \Drupal::moduleHandler()->moduleExists('entity_browser')) {
+    \Drupal::service('module_installer')->install(['entity_browser']);
+  }
+
   $browser = lightning_read_config('entity_browser.browser.media_browser', 'lightning_media');
   EntityBrowser::create($browser)->save();
 
@@ -120,7 +117,11 @@ function lightning_media_update_8006() {
  * Deletes the media_library view.
  */
 function lightning_media_update_8007() {
-  View::load('media_library')->delete();
+  $view = View::load('media_library');
+  // Sanity check.
+  if ($view) {
+    $view->delete();
+  }
 }
 
 /**
@@ -128,6 +129,16 @@ function lightning_media_update_8007() {
  */
 function lightning_media_update_8008() {
   $view = View::load('media');
+  // Sanity check.
+  if (empty($view)) {
+    return;
+  }
+
+  // Views Infinite Scroll powers the pager of the EB display.
+  if (! \Drupal::moduleHandler()->moduleExists('views_infinite_scroll')) {
+    \Drupal::service('module_installer')->install(['views_infinite_scroll']);
+  }
+
   $display_id = $view->addDisplay('entity_browser', 'Browser');
   $display = &$view->getDisplay($display_id);
   $display = array_merge($display, array (

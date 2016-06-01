@@ -46,4 +46,15 @@ class EmbedCode extends EntityFormProxy {
     return $form;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function validate(array &$form, FormStateInterface $form_state) {
+    $input = $this->getInputValue($form_state);
+    $bundle = $this->bundleResolver->getBundle($input);
+    if (empty($bundle)) {
+      $form_state->setError($form['widget']['embed_code'], 'This is not a valid URL or embed code.');
+    }
+  }
+
 }

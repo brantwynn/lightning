@@ -150,28 +150,23 @@ abstract class EntityFormProxy extends WidgetBase {
   /**
    * {@inheritdoc}
    */
-  public function submit(array &$element, array &$form, FormStateInterface $form_state) {
+  public function validate(array &$form, FormStateInterface $form_state) {
+    parent::validate($form, $form_state);
+
     $input = $this->getInputValue($form_state);
-
-    $bundle = $this->bundleResolver->getBundle($input);
-    if ($bundle) {
-      $type_config = $bundle->getTypeConfiguration();
-
-      /** @var \Drupal\media_entity\MediaInterface $entity */
-      $entity = $this->entityManager->getStorage('media')->create([
-        'bundle' => $bundle->id(),
-        $type_config['source_field'] => $input,
-      ]);
-      foreach ($form_state->getValues() as $key => $value) {
-        if ($entity->hasField($key)) {
-          $entity->set($key, $value);
-        }
-      }
-      $entity->save();
-
-      // Complete the selection process.
-      $this->selectEntities([$entity], $form_state);
+    if (empty($input)) {
+      $form_state->setError($form['widget'], 'No input provided!');
     }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function submit(array &$element, array &$form, FormStateInterface $form_state) {
+    // IEF will take care of creating the entity upon submission. All we need to
+    // do is send it upstream to Entity Browser.
+    $entity = $form['widget']['entity']['#entity'];
+    $this->selectEntities([$entity], $form_state);
   }
 
   /**

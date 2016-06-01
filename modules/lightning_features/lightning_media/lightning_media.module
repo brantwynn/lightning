@@ -84,3 +84,15 @@ function lightning_media_js_settings_alter(array &$settings, \Drupal\Core\Asset\
     $settings['ajax'] = [];
   }
 }
+
+/**
+ * Preprocess function for grid views of the media library.
+ *
+ * @param array $variables
+ *   Template variables.
+ */
+function lightning_media_preprocess_views_view_grid__media(array &$variables) {
+  foreach ($variables['items'] as &$item) {
+    $item['attributes']['data-selectable'] = 'true';
+  }
+}

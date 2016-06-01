@@ -3,3 +3,9 @@ browser.styling:
     component:
       css/browser.css:
         minified: true
+  js:
+    js/browser.js:
+      minified: false
+  dependencies:
+    - core/jquery
+    - core/underscore

@@ -243,7 +243,7 @@ function lightning_media_update_8008() {
                 'type' => 'image',
                 'settings' =>
                   array (
-                    'image_style' => 'thumbnail',
+                    'image_style' => 'medium',
                     'image_link' => '',
                   ),
                 'group_column' => '',
@@ -307,8 +307,8 @@ function lightning_media_update_8008() {
                 'element_label_class' => '',
                 'element_label_colon' => false,
                 'element_wrapper_type' => '',
-                'element_wrapper_class' => '',
-                'element_default_classes' => 1,
+                'element_wrapper_class' => 'visually-hidden',
+                'element_default_classes' => 0,
                 'empty' => '',
                 'hide_empty' => 0,
                 'empty_zero' => 0,

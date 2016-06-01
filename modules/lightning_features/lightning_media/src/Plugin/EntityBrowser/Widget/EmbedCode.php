@@ -32,6 +32,9 @@ class EmbedCode extends EntityFormProxy {
     $form['embed_code'] = array(
       '#type' => 'textarea',
       '#placeholder' => $this->t('Enter a URL...'),
+      '#attributes' => array(
+        'class' => array('keyup-change'),
+      ),
       '#ajax' => array(
         'event' => 'change',
         'wrapper' => $form['ief_target']['#id'],

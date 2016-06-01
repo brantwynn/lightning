@@ -191,7 +191,6 @@ abstract class EntityFormProxy extends WidgetBase {
       /** @var \Drupal\media_entity\MediaInterface $entity */
       $entity = $this->entityManager->getStorage('media')->create([
         'bundle' => $bundle->id(),
-        'name' => 'TODO',
         'uid' => $this->currentUser->id(),
         'status' => TRUE,
       ]);

@@ -196,7 +196,7 @@ function lightning_media_update_8008() {
                 'relationship' => 'none',
                 'group_type' => 'group',
                 'admin_label' => '',
-                'label' => 'Thumbnail',
+                'label' => '',
                 'exclude' => false,
                 'alter' =>
                   array (

@@ -31,4 +31,8 @@ nav.eb-tabs {
       }
     }
   }
+
+  .views-row.selected {
+    box-shadow: 0 0 20px lime;
+  }
 }

@@ -3,19 +3,19 @@
 
   Drupal.behaviors.entityBrowserSelection = {
 
-    onClick: function () {
-      $('input[name^="entity_browser_select"]', this).prop('checked', function () {
-        return ! this.checked;
-      });
-      $(this).toggleClass('selected');
-    },
-
     attach: function (context) {
-      $('.view [data-selectable]', context).on('click', this.onClick);
-    },
+      var $all = $('[data-selectable]', context);
 
-    detach: function (context) {
-      $('.view [data-selectable]', context).off('click', this.onClick);
+      $all.on('click', function () {
+        var $input = $('input[name^="entity_browser_select"]', this);
+
+        $('input[name ^= "entity_browser_select"]', this).prop('checked', true);
+        $(this).addClass('selected');
+
+        if ($input.is('[type = "radio"]')) {
+          $all.not(this).removeClass('selected');
+        }
+      });
     }
 
   };

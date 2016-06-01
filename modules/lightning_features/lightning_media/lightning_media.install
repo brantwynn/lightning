@@ -313,6 +313,7 @@ function lightning_media_update_8008() {
                 'hide_empty' => 0,
                 'empty_zero' => 0,
                 'hide_alter_empty' => 1,
+                'selection_type' => 'radio',
                 'entity_type' => 'media',
                 'plugin_id' => 'entity_browser_select',
               ),

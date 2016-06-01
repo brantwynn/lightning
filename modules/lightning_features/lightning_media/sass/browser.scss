@@ -32,7 +32,7 @@ nav.eb-tabs {
     }
   }
 
-  .views-row.selected {
+  .views-row.selected, .views-col.selected {
     box-shadow: 0 0 20px lime;
   }
 }

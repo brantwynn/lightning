@@ -93,6 +93,8 @@ function lightning_media_js_settings_alter(array &$settings, \Drupal\Core\Asset\
  */
 function lightning_media_preprocess_views_view_grid__media(array &$variables) {
   foreach ($variables['items'] as &$item) {
-    $item['attributes']['data-selectable'] = 'true';
+    foreach ($item['content'] as &$column) {
+      $column['attributes']['data-selectable'] = 'true';
+    }
   }
 }

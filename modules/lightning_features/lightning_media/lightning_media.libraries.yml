@@ -4,8 +4,7 @@ browser.styling:
       css/browser.css:
         minified: true
   js:
-    js/browser.js:
-      minified: false
+    js/browser.js: { }
   dependencies:
     - core/jquery
     - core/underscore

@@ -42,7 +42,7 @@ class EmbedCode extends PreviewHandlerBase {
     parent::alterForm($form, $form_state, $entity);
 
     $entity = $entity ?: $this->getEntity($form_state);
-    $field = $this->getField($entity)->getName();
+    $field = $this->getSourceField($entity)->getName();
 
     $form[$field]['widget'][0]['value']['#ajax'] = [
       'event' => 'change',

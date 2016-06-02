@@ -16,6 +16,7 @@ use Drupal\media_entity\MediaInterface;
 abstract class PreviewHandlerBase implements PreviewHandlerInterface {
 
   use DependencySerializationTrait;
+  use SourceFieldTrait;
   use StringTranslationTrait;
 
   /**
@@ -24,13 +25,6 @@ abstract class PreviewHandlerBase implements PreviewHandlerInterface {
    * @var \Drupal\Core\Entity\EntityStorageInterface
    */
   protected $bundleStorage;
-
-  /**
-   * The storage handler for configurable fields.
-   *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
-   */
-  protected $fieldStorage;
 
   /**
    * The storage handler for entity form displays.
@@ -107,22 +101,6 @@ abstract class PreviewHandlerBase implements PreviewHandlerInterface {
   protected function getDisplay(MediaInterface $entity, $display_mode = NULL) {
     $id = $entity->getEntityTypeId() . '.' . $entity->bundle() . '.' . ($display_mode ?: 'default');
     return $this->displayStorage->load($id);
-  }
-
-  /**
-   * Returns the source field entity for a media entity.
-   *
-   * @param \Drupal\media_entity\MediaInterface $entity
-   *   The media entity.
-   *
-   * @return \Drupal\Core\Field\FieldConfigInterface
-   *   The source field's config entity.
-   */
-  protected function getField(MediaInterface $entity) {
-    $type_config = $entity->getType()->getConfiguration();
-    $id = $entity->getEntityTypeId() . '.' . $entity->bundle() . '.' . $type_config['source_field'];
-
-    return $this->fieldStorage->load($id);
   }
 
 }
